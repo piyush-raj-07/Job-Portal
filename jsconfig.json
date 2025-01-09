@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "baseUrl": ".",  // Sets the base URL for resolving non-relative module names
+      "paths": {
+        "@/*": ["src/*"]  // Creates aliases for paths in your project
+      }
+    },
+    "include": [
+      "src/**/*"  // Includes all files in the 'src' folder
+, "client/src/components", "client/src/lib", "client/src/hooks"    ],
+    "exclude": [
+      "node_modules",  // Excludes 'node_modules' folder
+      "dist"           // Excludes 'dist' folder
+    ]
+  }
+  
