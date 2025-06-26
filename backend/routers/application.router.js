@@ -14,7 +14,7 @@ router.route("/apply/:id").post((req, res, next) => {
     next();
 });
 
-router.route("/apply/:id").get(verifyJWT, applyJob);
+router.route("/apply/:id").post(verifyJWT, applyJob);
 router.route("/get").get(verifyJWT, getAppliedJob);
 router.route("/applicants/:id").get(verifyJWT, getApplicants);
 router.route("/status/:id/update").post(verifyJWT, updateApplicationStatus);

@@ -20,7 +20,10 @@ const Home = () => {
     }
   }, []);
   return (
-    <div>
+    <div
+      className="bg-gray-900 min-h-screen text-white"
+    >
+
       <Navbar />
       <HeroSection />
       <CategoryCarousel />

@@ -3,23 +3,38 @@ import { Job } from "../models/job.model.js";
 
 export const applyJob = async (req, res) => {
     try {
-        const  jobId  = req.params.id;
-        const  userId = req.user.id;
-        if (!jobId) {
-            return res.status(400).json({ message: "Job id is required" });
+        const jobId = req.params.id;
+        const userId = req.user?.id; // Use optional chaining
+
+        // Check if user is authenticated
+        if (!req.user || !userId) {
+            return res.status(401).json({ 
+                success: false, 
+                message: "Please login to apply for jobs" 
+            });
         }
+        
+        if (!jobId) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "Job id is required" 
+            });
+        }
+        
         const job = await Job.findById(jobId);
         if (!job) {
-            return res.status(404).json({ message: "Job not found" });
-        }
-
-        if (!userId) {
-            return res.status(400).json({ message: "User id is required" });
+            return res.status(404).json({ 
+                success: false, 
+                message: "Job not found" 
+            });
         }
 
         const applicationExists = await Application.findOne({ job: jobId, applicant: userId });
         if (applicationExists) {
-            return res.status(400).json({ message: "You have already applied for this job" });
+            return res.status(400).json({ 
+                success: false, 
+                message: "You have already applied for this job" 
+            });
         }
 
         const application = new Application({
@@ -27,15 +42,21 @@ export const applyJob = async (req, res) => {
             applicant: userId
         });
         await application.save();
+        
         job.applications.push(application._id);
         await job.save();
-        return res.status(201).json({ message: "Application submitted successfully" });
-
-
+        
+        return res.status(201).json({ 
+            success: true, 
+            message: "Application submitted successfully" 
+        });
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ 
+            success: false, 
+            message: "Internal server error" 
+        });
     }
 }
 

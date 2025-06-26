@@ -174,7 +174,15 @@ export const updateProfile = async (req, res) => {
         if (req.file) {
             try {
                 const fileUri = getDataUri(req.file);
-                const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+                
+                // Fixed Cloudinary upload configuration for PDFs
+                const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+                    resource_type: "raw",
+                    public_id: `resumes/${req.user._id}_${Date.now()}`,
+                    use_filename: true,
+                    unique_filename: false,
+                });
+
                 updateObject['profile.resume'] = cloudResponse.secure_url;
                 updateObject['profile.resumeOriginalName'] = req.file.originalname;
             } catch (uploadError) {
@@ -229,4 +237,3 @@ export const updateProfile = async (req, res) => {
         });
     }
 };
-
