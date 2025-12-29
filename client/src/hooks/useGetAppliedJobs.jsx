@@ -6,11 +6,12 @@ import { toast } from "sonner"
 
 const useGetAppliedJobs = () => {
     const dispatch = useDispatch();
+    const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const fetchAppliedJobs = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/api/v1/application/get`, {withCredentials: true});
+                const res = await axios.get(`${BASE_URL}/api/v1/application/get`, {withCredentials: true});
                 
                 if (res.data.success) {
                     console.log("Applied jobs data:", res.data);

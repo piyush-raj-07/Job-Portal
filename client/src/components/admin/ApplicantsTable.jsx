@@ -8,15 +8,17 @@ import { toast } from "sonner"
 import axios from "axios"
 import { Button } from "../ui/button"
 
-const shortlistingStatus = ["Accepted", "Rejected"]
+
 
 const ApplicantsTable = () => {
   const { applicants } = useSelector((store) => store.application)
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const shortlistingStatus = ["Accepted", "Rejected"]
 
   const statusHandler = async (status, id) => {
     try {
       axios.defaults.withCredentials = true
-      const res = await axios.post(`http://localhost:3000/api/v1/application/status/${id}/update`, { status })
+      const res = await axios.post(`${BASE_URL}/api/v1/application/status/${id}/update`, { status })
       if (res.data.success) {
         toast.success(res.data.message)
       }

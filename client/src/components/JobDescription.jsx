@@ -25,6 +25,8 @@ const JobDescription = () => {
   const { user } = useSelector((store) => store.auth)
   const isIntiallyApplied = singleJob?.applications?.some((application) => application.applicant === user?._id) || false
   const [isApplied, setIsApplied] = useState(isIntiallyApplied)
+    
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const params = useParams()
   const jobId = params.id
@@ -42,7 +44,7 @@ const JobDescription = () => {
 
     try {
       // Changed from GET to POST request
-      const res = await axios.post(`http://localhost:3000/api/v1/application/apply/${jobId}`, {}, { withCredentials: true })
+      const res = await axios.post(`${BASE_URL}/api/v1/application/apply/${jobId}`, {}, { withCredentials: true })
 
       if (res.data.success) {
         setIsApplied(true)

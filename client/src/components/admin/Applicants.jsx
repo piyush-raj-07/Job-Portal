@@ -16,11 +16,12 @@ const Applicants = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { applicants } = useSelector((store) => store.application)
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchAllApplicants = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/v1/application/applicants/${params.id}`, {
+        const res = await axios.get(`${BASE_URL}/api/v1/application/applicants/${params.id}`, {
           withCredentials: true,
         })
         dispatch(setAllApplicants(res.data.job))

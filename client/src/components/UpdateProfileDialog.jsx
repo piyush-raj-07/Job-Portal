@@ -14,6 +14,7 @@ import { toast } from "sonner"
 const UpdateProfileDialog = ({ open, setOpen }) => {
   const [loading, setLoading] = useState(false)
   const { user } = useSelector((store) => store.auth)
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [input, setInput] = useState({
     fullname: user?.fullname || "",
@@ -47,7 +48,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     }
     try {
       setLoading(true)
-      const res = await axios.post(`http://localhost:3000/api/v1/user/profile/update`, formData, {
+      const res = await axios.post(`${BASE_URL}/v1/user/profile/update`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

@@ -26,6 +26,7 @@ const PostJob = () => {
   })
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const { companies } = useSelector((store) => store.company)
 
@@ -42,7 +43,7 @@ const PostJob = () => {
     e.preventDefault()
     try {
       setLoading(true)
-      const res = await axios.post(`http://localhost:3000/api/v1/job/postJob`, input, {
+      const res = await axios.post(`${BASE_URL}/api/v1/job/postJob`, input, {
         headers: {
           "Content-Type": "application/json",
         },

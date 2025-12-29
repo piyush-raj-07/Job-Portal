@@ -24,6 +24,7 @@ const CompanySetup = () => {
     const {singleCompany} = useSelector(store=>store.company);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     const changeEventHandler = (e) => {
         setInput({ ...input, [e.target.name]: e.target.value });
@@ -46,7 +47,7 @@ const CompanySetup = () => {
         }
         try {
             setLoading(true);
-            const res = await axios.post(`http://localhost:3000/api/v1/company/update/${params.id}`, formData, {
+            const res = await axios.post(`${BASE_URL}/api/v1/company/update/${params.id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },

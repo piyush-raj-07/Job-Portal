@@ -15,10 +15,11 @@ const Navbar = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const logoutHandler = async () => {
     try {
-      const res = await axios.post(`http://localhost:3000/api/v1/user/logout`, { withCredentials: true })
+      const res = await axios.post(`${BASE_URL}/api/v1/user/logout`, { withCredentials: true })
       if (res.data.success) {
         dispatch(setUser(null))
         navigate("/")

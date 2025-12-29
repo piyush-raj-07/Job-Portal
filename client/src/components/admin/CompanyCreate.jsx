@@ -17,6 +17,7 @@ const CompanyCreate = () => {
   const [companyname, setCompanyname] = useState("")
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const registerNewCompany = async () => {
     if (!companyname.trim()) {
@@ -27,7 +28,7 @@ const CompanyCreate = () => {
     try {
       setLoading(true)
       const res = await axios.post(
-        `http://localhost:3000/api/v1/company/registercompany`,
+        `${BASE_URL}/api/v1/company/registercompany`,
         { companyname },
         {
           headers: {
