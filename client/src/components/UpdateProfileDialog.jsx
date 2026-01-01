@@ -48,7 +48,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     }
     try {
       setLoading(true)
-      const res = await axios.post(`${BASE_URL}/v1/user/profile/update`, formData, {
+      const res = await axios.post(`${BASE_URL}/api/v1/user/profile/update`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
