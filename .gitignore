@@ -1,6 +1,11 @@
 # Local documentation (not pushed)
 docs/
 
+# Environment files (keep secrets and local config out of git)
+.env
+.env.*
+!.env.example
+
 # Python (backend/ai-service)
 __pycache__/
 *.py[cod]
