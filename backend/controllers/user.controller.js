@@ -4,6 +4,17 @@ import jwt from "jsonwebtoken";
 import cloudinary from "../utils/cloudinary.js";
 import getDataUri from "../utils/datauri.js";
 
+// Cookie options for Refresh Token
+// In production the frontend (Vercel) and backend are on different domains,
+// so the cookie must be sameSite "none" + secure or the browser won't send it.
+const isProduction = process.env.NODE_ENV === "production";
+const cookieOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+};
+
 export const register = async (req, res) => {
     try {
         const { fullname, email, phoneNumber, password, role } = req.body;
@@ -74,7 +85,7 @@ export const login = async (req, res) => {
             });
         }
 
-        let user = await User.findOne({ email });
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({
                 message: "User not found.",
@@ -97,24 +108,31 @@ export const login = async (req, res) => {
             });
         }
 
-        const tokenData = { _id: user._id };
-        const token = jwt.sign(tokenData, "123@123", { expiresIn: "2d" });
+        // Generate Access & Refresh Tokens
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
 
-        user = {
+        // Save Refresh Token in Database
+        user.refreshToken = refreshToken;
+        await user.save({ validateBeforeSave: false });
+
+        const userResponse = {
             _id: user._id,
             fullname: user.fullname,
             email: user.email,
             phoneNumber: user.phoneNumber,
             role: user.role,
             profile: user.profile,
+            createdAt: user.createdAt,
         };
 
         return res
             .status(200)
-            .cookie("token", token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true,secure : true , sameSite: "none" })
+            .cookie("refreshToken", refreshToken, cookieOptions) // Send Refresh Token as HttpOnly Cookie
             .json({
                 message: `Welcome back, ${user.fullname}.`,
-                user,   
+                accessToken, // Send Access Token in JSON response body
+                user: userResponse,
                 success: true,
             });
     } catch (error) {
@@ -126,14 +144,89 @@ export const login = async (req, res) => {
     }
 };
 
+// Silent Refresh Endpoint
+export const refreshAccessToken = async (req, res) => {
+    try {
+        const incomingRefreshToken = req.cookies?.refreshToken;
 
+        if (!incomingRefreshToken) {
+            return res.status(401).json({
+                message: "Refresh token missing.",
+                success: false
+            });
+        }
+
+        // Verify Refresh Token
+        const decodedToken = jwt.verify(
+            incomingRefreshToken,
+            process.env.REFRESH_TOKEN_SECRET || "refresh_secret"
+        );
+
+        const user = await User.findById(decodedToken?._id);
+
+        if (!user || user.refreshToken !== incomingRefreshToken) {
+            return res.status(401).json({
+                message: "Invalid or expired refresh token.",
+                success: false
+            });
+        }
+
+        // Issue new tokens (Token Rotation)
+        const newAccessToken = user.generateAccessToken();
+        const newRefreshToken = user.generateRefreshToken();
+
+        user.refreshToken = newRefreshToken;
+        await user.save({ validateBeforeSave: false });
+
+        // Also send the user, so the frontend can restore the session on page
+        // load without keeping the user in localStorage
+        const userResponse = {
+            _id: user._id,
+            fullname: user.fullname,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            role: user.role,
+            profile: user.profile,
+            createdAt: user.createdAt,
+        };
+
+        return res
+            .status(200)
+            .cookie("refreshToken", newRefreshToken, cookieOptions)
+            .json({
+                message: "Token refreshed successfully.",
+                accessToken: newAccessToken,
+                user: userResponse,
+                success: true
+            });
+    } catch (error) {
+        console.error("Error refreshing token:", error);
+        return res.status(401).json({
+            message: "Invalid or expired refresh token.",
+            success: false
+        });
+    }
+};
 
 export const logoutuser = async (req, res) => {
     try {
-        return res.status(200).cookie("token", "", { maxAge: 0, httpOnly: true }).json({
-            message: "Logged out successfully.",
-            success: true,
-        });
+        // The logout route has no verifyJWT (the access token may already be
+        // expired), so find the user by their refresh token cookie instead.
+        const refreshToken = req.cookies?.refreshToken;
+        if (refreshToken) {
+            await User.findOneAndUpdate(
+                { refreshToken },
+                { $unset: { refreshToken: 1 } }
+            );
+        }
+
+        return res
+            .status(200)
+            .clearCookie("refreshToken", cookieOptions)
+            .json({
+                message: "Logged out successfully.",
+                success: true,
+            });
     } catch (error) {
         console.error("Error during logout:", error);
         return res.status(500).json({

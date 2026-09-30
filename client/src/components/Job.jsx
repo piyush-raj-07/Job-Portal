@@ -1,85 +1,156 @@
 "use client"
 
 import { Button } from "./ui/button"
-import { Bookmark, MapPin, Clock, Briefcase, DollarSign, Building } from "lucide-react"
+import { Bookmark, MapPin, Clock, Briefcase, DollarSign, Building, ArrowRight, Star } from "lucide-react"
 import { Avatar, AvatarImage } from "./ui/avatar"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 
-const Job = ({ job }) => {
+const Job = ({ job, view = "grid" }) => {
   const navigate = useNavigate()
   const [isSaved, setIsSaved] = useState(false)
 
-  const daysAgoFunction = (mongodbTime) => {
-    const createdAt = new Date(mongodbTime)
-    const currentTime = new Date()
-    const timeDifference = currentTime - createdAt
-    return Math.floor(timeDifference / (1000 * 24 * 60 * 60))
-  }
+  const daysAgo = (t) => Math.floor((new Date() - new Date(t)) / (1000 * 24 * 60 * 60))
+  const age = daysAgo(job?.createdAt)
+  const isNew = age <= 2
+  const initials = (job?.company?.name || "CO").split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()
 
-  return (
-    <div className="group bg-gray-800 border border-gray-700 rounded-2xl p-6 hover:border-blue-500/30 transition-all duration-300">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-2 text-sm text-gray-400">
-          <Clock className="h-4 w-4" />
-          <span>{daysAgoFunction(job?.createdAt) === 0 ? "Today" : `${daysAgoFunction(job?.createdAt)} days ago`}</span>
+  /* ── List layout ── */
+  if (view === "list") {
+    return (
+      <div className="group flex items-center gap-4 bg-[#0e1529] border border-white/5 rounded-2xl px-5 py-4 hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-900/10 transition-all duration-200">
+        <div className="w-11 h-11 rounded-xl gradient-purple flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-md shadow-violet-900/30">
+          {job?.company?.logo
+            ? <img src={job.company.logo} alt="" className="w-full h-full object-cover rounded-xl" />
+            : initials}
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-gray-400 hover:text-blue-500 hover:bg-gray-700/50"
-          onClick={() => setIsSaved(!isSaved)}
-        >
-          <Bookmark className={`h-4 w-4 ${isSaved ? "fill-blue-500 text-blue-500" : ""}`} />
-        </Button>
-      </div>
 
-      <div className="flex items-start gap-4 mb-4">
-        <Avatar className="h-12 w-12 rounded-lg bg-gray-700 border border-gray-600">
-          <AvatarImage src={job?.company?.logo || "/placeholder.svg?height=48&width=48"} />
-        </Avatar>
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-lg text-white mb-1 group-hover:text-blue-500 transition-colors">
-            {job?.title}
-          </h3>
-          <div className="flex items-center gap-2 text-gray-400">
-            <Building className="h-4 w-4" />
-            <span className="text-sm">{job?.company?.name}</span>
+          <div className="flex items-center gap-2 mb-0.5">
+            <h3 className="font-semibold text-white group-hover:text-violet-300 transition-colors truncate text-sm">
+              {job?.title}
+            </h3>
+            {isNew && (
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-violet-600/20 text-violet-300 border border-violet-500/30 flex-shrink-0">
+                NEW
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-3 text-xs text-slate-500">
+            <span className="flex items-center gap-1"><Building className="h-3 w-3" />{job?.company?.name}</span>
+            <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{job?.location || "Remote"}</span>
+            <span className="hidden sm:flex items-center gap-1"><Briefcase className="h-3 w-3" />{job?.jobType}</span>
           </div>
         </div>
+
+        <div className="hidden md:flex flex-col items-end gap-1 flex-shrink-0">
+          <span className="text-amber-400 text-sm font-bold">{job?.salary}</span>
+          <span className="text-slate-600 text-xs flex items-center gap-1">
+            <Clock className="h-3 w-3" />{age === 0 ? "Today" : `${age}d ago`}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <button
+            className="p-2 rounded-xl text-slate-500 hover:text-violet-400 hover:bg-violet-500/10 transition-all"
+            onClick={() => setIsSaved(!isSaved)}
+          >
+            <Bookmark className={`h-4 w-4 ${isSaved ? "fill-violet-500 text-violet-500" : ""}`} />
+          </button>
+          <Button
+            onClick={() => navigate(`/description/${job?._id}`)}
+            className="gradient-purple hover:opacity-90 text-white text-xs px-4 h-8 rounded-xl flex items-center gap-1 shadow-md shadow-violet-900/30"
+          >
+            Apply <ArrowRight className="h-3.5 w-3.5" />
+          </Button>
+        </div>
       </div>
+    )
+  }
 
-      <p className="text-gray-300 text-sm mb-6 line-clamp-2">{job?.description}</p>
+  /* ── Grid layout ── */
+  return (
+    <div className="group relative bg-[#0e1529] border border-white/5 rounded-2xl p-5 card-hover flex flex-col overflow-hidden">
+      {/* Hover shimmer */}
+      <div className="absolute inset-0 bg-gradient-to-br from-violet-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl pointer-events-none" />
 
-      <div className="flex flex-wrap gap-2 mb-6">
-        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-900/20 border border-blue-700/30 rounded-full text-xs text-blue-300">
-          <MapPin className="h-3 w-3" />
-          <span>{job?.location || "Remote"}</span>
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Top row */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-1 text-xs text-slate-600">
+            <Clock className="h-3 w-3" />
+            {age === 0 ? "Today" : `${age}d ago`}
+          </div>
+          <div className="flex items-center gap-2">
+            {isNew && (
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-violet-600/20 text-violet-300 border border-violet-500/30">
+                NEW
+              </span>
+            )}
+            <button
+              className="p-1.5 rounded-lg text-slate-600 hover:text-violet-400 hover:bg-violet-500/10 transition-all"
+              onClick={() => setIsSaved(!isSaved)}
+            >
+              <Bookmark className={`h-4 w-4 ${isSaved ? "fill-violet-500 text-violet-500" : ""}`} />
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-700 rounded-full text-xs text-gray-300">
-          <Briefcase className="h-3 w-3" />
-          <span>{job?.jobType}</span>
-        </div>
-        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-900/20 border border-amber-700/30 rounded-full text-xs text-amber-300">
-          <DollarSign className="h-3 w-3" />
-          <span>{job?.salary}LPA</span>
-        </div>
-      </div>
 
-      <div className="flex gap-3">
-        <Button
-          onClick={() => navigate(`/description/${job?._id}`)}
-          variant="outline"
-          className="flex-1 border-gray-600 bg-gray-700/50 hover:bg-gray-600 text-gray-300 hover:text-white"
-        >
-          View Details
-        </Button>
-        <Button
-          onClick={() => navigate(`/description/${job?._id}`)}
-          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-        >
-          Apply Now
-        </Button>
+        {/* Company + title */}
+        <div className="flex items-start gap-3 mb-3">
+          <div className="w-10 h-10 rounded-xl gradient-purple flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-md shadow-violet-900/30">
+            {job?.company?.logo
+              ? <img src={job.company.logo} alt="" className="w-full h-full object-cover rounded-xl" />
+              : initials}
+          </div>
+          <div className="min-w-0">
+            <h3 className="font-bold text-white group-hover:text-violet-200 transition-colors leading-tight line-clamp-1">
+              {job?.title}
+            </h3>
+            <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+              <Building className="h-3 w-3" />{job?.company?.name}
+            </p>
+          </div>
+        </div>
+
+        <p className="text-slate-500 text-xs leading-relaxed mb-4 line-clamp-2 flex-grow">{job?.description}</p>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          <span className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-violet-500/10 border border-violet-500/10 text-violet-400">
+            <MapPin className="h-2.5 w-2.5" />{job?.location || "Remote"}
+          </span>
+          <span className="text-[11px] px-2.5 py-1 rounded-full bg-white/5 border border-white/5 text-slate-400">
+            {job?.jobType}
+          </span>
+          {job?.experienceLevel && (
+            <span className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/10 text-indigo-400">
+              <Star className="h-2.5 w-2.5" />{job?.experienceLevel}
+            </span>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="flex gap-2 pt-4 border-t border-white/5">
+          <div className="flex-1 flex items-center">
+            <span className="text-sm font-bold text-amber-400 flex items-center gap-1">
+              <DollarSign className="h-3 w-3" />{job?.salary}
+            </span>
+          </div>
+          <Button
+            onClick={() => navigate(`/description/${job?._id}`)}
+            variant="outline"
+            className="border-white/10 bg-transparent hover:bg-white/5 text-slate-400 hover:text-white text-xs px-3 h-8 rounded-xl"
+          >
+            Details
+          </Button>
+          <Button
+            onClick={() => navigate(`/description/${job?._id}`)}
+            className="gradient-purple hover:opacity-90 text-white text-xs px-4 h-8 rounded-xl shadow-md shadow-violet-900/30"
+          >
+            Apply
+          </Button>
+        </div>
       </div>
     </div>
   )

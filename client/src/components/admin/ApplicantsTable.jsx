@@ -2,17 +2,34 @@
 
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { MoreHorizontal, FileText, Mail, Phone, Calendar, CheckCircle, XCircle, Users } from "lucide-react"
+import {
+  MoreHorizontal,
+  FileText,
+  Mail,
+  Phone,
+  Calendar,
+  CheckCircle,
+  XCircle,
+  Users,
+  Briefcase,
+} from "lucide-react"
 import { useSelector } from "react-redux"
 import { toast } from "sonner"
 import axios from "axios"
 import { Button } from "../ui/button"
 
-
+/**
+ * Wraps a PDF URL with Google Docs Viewer so it opens in the browser
+ * instead of downloading — avoids Cloudinary's Content-Disposition and CORS issues.
+ */
+const toInlineUrl = (url) => {
+  if (!url) return url
+  return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
+}
 
 const ApplicantsTable = () => {
   const { applicants } = useSelector((store) => store.application)
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL
   const shortlistingStatus = ["Accepted", "Rejected"]
 
   const statusHandler = async (status, id) => {
@@ -23,7 +40,7 @@ const ApplicantsTable = () => {
         toast.success(res.data.message)
       }
     } catch (error) {
-      toast.error(error.response.data.message)
+      toast.error(error.response?.data?.message || "Failed to update status")
     }
   }
 
@@ -68,15 +85,16 @@ const ApplicantsTable = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 overflow-x-auto">
       <Table>
         <TableCaption className="text-gray-400 mb-4">
           Recent applicants for this position ({applicants?.applications?.length})
         </TableCaption>
         <TableHeader>
-          <TableRow className="border-gray-700 hover:bg-gray-700/50">
+          <TableRow className="border-gray-700 hover:bg-transparent">
             <TableHead className="text-gray-300 font-semibold">Candidate</TableHead>
             <TableHead className="text-gray-300 font-semibold">Contact</TableHead>
+            <TableHead className="text-gray-300 font-semibold">Experience</TableHead>
             <TableHead className="text-gray-300 font-semibold">Resume</TableHead>
             <TableHead className="text-gray-300 font-semibold">Applied Date</TableHead>
             <TableHead className="text-gray-300 font-semibold">Status</TableHead>
@@ -85,44 +103,74 @@ const ApplicantsTable = () => {
         </TableHeader>
         <TableBody>
           {applicants?.applications?.map((item) => (
-            <TableRow key={item._id} className="border-gray-700 hover:bg-gray-700/30 transition-colors">
+            <TableRow
+              key={item._id}
+              className="border-gray-700 hover:bg-gray-700/30 transition-colors"
+            >
+              {/* Candidate */}
               <TableCell>
                 <div>
                   <div className="font-medium text-white">{item?.applicant?.fullname}</div>
-                  <div className="flex items-center gap-2 text-sm text-gray-400 mt-1">
-                    <Mail className="h-3 w-3" />
-                    {item?.applicant?.email}
+                  <div className="flex items-center gap-1.5 text-sm text-gray-400 mt-1">
+                    <Mail className="h-3 w-3 shrink-0" />
+                    <span className="truncate max-w-[180px]">{item?.applicant?.email}</span>
                   </div>
                 </div>
               </TableCell>
+
+              {/* Contact */}
               <TableCell>
                 <div className="flex items-center gap-2 text-gray-300">
-                  <Phone className="h-4 w-4 text-gray-400" />
-                  <span>{item?.applicant?.phoneNumber}</span>
+                  <Phone className="h-4 w-4 text-gray-400 shrink-0" />
+                  <span>{item?.phoneNumber || item?.applicant?.phoneNumber || "—"}</span>
                 </div>
               </TableCell>
-              <TableCell>
-                {item.applicant?.profile?.resume ? (
-                  <a
-                    className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 cursor-pointer"
-                    href={item?.applicant?.profile?.resume}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <FileText className="h-4 w-4" />
-                    <span className="text-sm">{item?.applicant?.profile?.resumeOriginalName || "View Resume"}</span>
-                  </a>
-                ) : (
-                  <span className="text-gray-500">No resume</span>
-                )}
-              </TableCell>
+
+              {/* Experience */}
               <TableCell>
                 <div className="flex items-center gap-2 text-gray-300">
-                  <Calendar className="h-4 w-4 text-gray-400" />
-                  <span>{item?.applicant.createdAt.split("T")[0]}</span>
+                  <Briefcase className="h-4 w-4 text-gray-400 shrink-0" />
+                  <span>
+                    {item?.yearsOfExperience != null
+                      ? `${item.yearsOfExperience} yr${item.yearsOfExperience === 1 ? "" : "s"}`
+                      : "—"}
+                  </span>
                 </div>
               </TableCell>
+
+              {/* Resume — fl_inline forces browser to open PDF instead of downloading */}
+              <TableCell>
+                <div className="flex flex-col items-start gap-2">
+                  {item?.resumeUrl ? (
+                    <a
+                      href={toInlineUrl(item.resumeUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
+                    >
+                      <FileText className="h-4 w-4 shrink-0" />
+                      <span className="text-sm truncate max-w-[140px]">
+                        {item?.resumeOriginalName || "View Resume"}
+                      </span>
+                    </a>
+                  ) : (
+                    <span className="text-gray-500 text-sm">No resume</span>
+                  )}
+                </div>
+              </TableCell>
+
+              {/* Applied Date */}
+              <TableCell>
+                <div className="flex items-center gap-2 text-gray-300">
+                  <Calendar className="h-4 w-4 text-gray-400 shrink-0" />
+                  <span>{item?.createdAt?.split("T")[0]}</span>
+                </div>
+              </TableCell>
+
+              {/* Status */}
               <TableCell>{getStatusBadge(item.status)}</TableCell>
+
+              {/* Actions */}
               <TableCell className="text-right">
                 <Popover>
                   <PopoverTrigger asChild>

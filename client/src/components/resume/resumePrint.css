@@ -1,0 +1,63 @@
+/*
+ * Print rules for resume export.
+ *
+ * The PDF is produced by the browser's own print engine rather than by
+ * rasterising the preview to an image. That keeps the text real text: it stays
+ * selectable, searchable, and readable by the ATS parsers that resumes are
+ * actually fed through. A screenshot-based PDF is invisible to all of them.
+ *
+ * Only the resume sheet is printed. `visibility` is used rather than `display`
+ * so the sheet keeps its own layout instead of collapsing with its ancestors.
+ */
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #resume-print-area,
+    #resume-print-area * {
+        visibility: visible;
+    }
+
+    #resume-print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0 4mm;
+
+        /* The on-screen sheet is a floating dark-mode card; on paper it is a page. */
+        border-radius: 0;
+        box-shadow: none;
+        min-height: 0;
+    }
+
+    /* The preview scrolls inside a fixed-height box on screen. On paper it must
+       run to its full length, or everything below the fold is lost. */
+    #resume-print-area,
+    #resume-print-area * {
+        overflow: visible !important;
+        max-height: none !important;
+    }
+
+    /* Keep an entry from splitting across a page break mid-way. */
+    #resume-print-area section,
+    #resume-print-area li {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    #resume-print-area h1,
+    #resume-print-area h2,
+    #resume-print-area h3 {
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+
+    @page {
+        size: A4;
+        margin: 12mm;
+    }
+}

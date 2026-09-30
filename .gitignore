@@ -1,0 +1,8 @@
+# Local documentation (not pushed)
+docs/
+
+# Python (backend/ai-service)
+__pycache__/
+*.py[cod]
+venv/
+.venv/

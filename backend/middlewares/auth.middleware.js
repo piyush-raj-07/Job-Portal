@@ -1,49 +1,58 @@
 import jwt from "jsonwebtoken";
-import { User } from "../models/user.model.js"; // Ensure the User model is correctly imported
-import dotenv from "dotenv";
-
-dotenv.config(); // Load environment variables from .env file
+import { User } from "../models/user.model.js";
 
 export const verifyJWT = async (req, res, next) => {
     try {
-        // Extract token from cookies
-        const token = req.cookies?.token;
+        // Get access token from Authorization header or cookie
+        const authHeader = req.headers.authorization;
+        const token = authHeader?.startsWith("Bearer ")
+            ? authHeader.split(" ")[1]
+            : req.cookies?.accessToken;
 
         if (!token) {
             return res.status(401).json({
-                message: "User not authorized. Token missing.",
+                message: "Unauthorized request. Token missing.",
                 success: false,
             });
         }
 
-        // Verify the token using the secret key
-        const decodedToken = jwt.verify(token, "123@123");
+        // Verify Access Token
+        const decodedToken = jwt.verify(
+            token,
+            process.env.ACCESS_TOKEN_SECRET || "access_secret"
+        );
 
-        // Find the user by ID, excluding the password field
-        const user = await User.findById(decodedToken?._id).select("-password");
+        const user = await User.findById(decodedToken?._id).select("-password -refreshToken");
 
         if (!user) {
-            return res.status(404).json({
-                message: "User not found.",
+            return res.status(401).json({
+                message: "Invalid access token.",
                 success: false,
             });
         }
 
-        // Attach the user to the request object for downstream use
         req.user = user;
         next();
     } catch (error) {
         console.error("Error verifying token:", error);
 
-        // Differentiate between invalid token and other errors
-        const errorMessage = 
-            error.name === "JsonWebTokenError" ? "Invalid token." : 
-            error.name === "TokenExpiredError" ? "Token expired." : 
-            "Authorization error.";
+        const errorMessage =
+            error.name === "TokenExpiredError" ? "Access token expired." : "Invalid access token.";
 
         return res.status(401).json({
             message: errorMessage,
             success: false,
         });
     }
+};
+
+// Use after verifyJWT. Only recruiters can go past this point.
+export const isRecruiter = (req, res, next) => {
+    if (req.user?.role !== "recruiter") {
+        return res.status(403).json({
+            message: "Only recruiters can do this.",
+            success: false,
+        });
+    }
+    next();
 };

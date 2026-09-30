@@ -154,12 +154,16 @@ export const updateCompany = async (req, res) => {
             });
         }
 
-        // Find and update the company
-        const company = await Company.findByIdAndUpdate(req.params.id, updateData, { new: true });
+        // Find and update the company — only if it belongs to this user
+        const company = await Company.findOneAndUpdate(
+            { _id: req.params.id, userId: req.user._id },
+            updateData,
+            { new: true }
+        );
 
         if (!company) {
             return res.status(404).json({
-                message: "Company not found.",
+                message: "Company not found or you do not have permission to update it.",
                 success: false,
             });
         }

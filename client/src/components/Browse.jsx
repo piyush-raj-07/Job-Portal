@@ -1,143 +1,221 @@
-import { useEffect } from "react"
+import { useEffect, useState, useMemo } from "react"
 import Navbar from "./shared/Navbar"
+import FilterCard from "./FilterCard"
 import Job from "./Job"
 import { useDispatch, useSelector } from "react-redux"
 import { setSearchedQuery } from "@/redux/jobSlice"
 import useGetAllJobs from "@/hooks/useGetAllJobs"
-import { Search, Filter, Grid, List } from "lucide-react"
+import {
+  Search, X, Grid3X3, List, SlidersHorizontal,
+  TrendingUp, Sparkles, ChevronDown
+} from "lucide-react"
 import { Button } from "./ui/button"
-import { useState } from "react"
 
 const Browse = () => {
   useGetAllJobs()
+
   const { allJobs } = useSelector((store) => store.job)
   const dispatch = useDispatch()
+
   const [viewMode, setViewMode] = useState("grid")
   const [showFilters, setShowFilters] = useState(false)
+  const [searchInput, setSearchInput] = useState("")
+  const [sortBy, setSortBy] = useState("newest")
+  const [activeFilters, setActiveFilters] = useState({})
+  const [activeSalary, setActiveSalary] = useState([0, 50])
 
   useEffect(() => {
-    return () => {
-      dispatch(setSearchedQuery(""))
-    }
+    return () => dispatch(setSearchedQuery(""))
   }, [])
 
+  const filteredJobs = useMemo(() => {
+    let jobs = [...allJobs]
+
+    const keyword = searchInput.trim().toLowerCase()
+    if (keyword) {
+      jobs = jobs.filter(
+        (job) =>
+          job.title?.toLowerCase().includes(keyword) ||
+          job.description?.toLowerCase().includes(keyword) ||
+          job.location?.toLowerCase().includes(keyword) ||
+          job.company?.name?.toLowerCase().includes(keyword)
+      )
+    }
+
+    if (activeFilters.location?.length) {
+      jobs = jobs.filter((job) =>
+        activeFilters.location.some((l) =>
+          job.location?.toLowerCase().includes(l.toLowerCase())
+        )
+      )
+    }
+
+    if (activeFilters.jobType?.length) {
+      jobs = jobs.filter((job) =>
+        activeFilters.jobType.some((t) =>
+          job.jobType?.toLowerCase().includes(t.toLowerCase())
+        )
+      )
+    }
+
+    if (activeSalary[1] < 50) {
+      jobs = jobs.filter((job) => job.salary <= activeSalary[1])
+    }
+
+    if (sortBy === "newest") jobs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    else if (sortBy === "salary-high") jobs.sort((a, b) => b.salary - a.salary)
+    else if (sortBy === "salary-low") jobs.sort((a, b) => a.salary - b.salary)
+
+    return jobs
+  }, [allJobs, searchInput, activeFilters, activeSalary, sortBy])
+
+  const handleFilterChange = (filters, salary) => {
+    setActiveFilters(filters)
+    setActiveSalary(salary)
+  }
+
   return (
-    <div className="bg-gradient-to-b from-gray-900 to-gray-800 min-h-screen text-white">
+    <div className="min-h-screen bg-[#0b0f1a]">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-6 py-10">
-        {/* Header Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            Browse <span className="text-blue-500">Jobs</span>
-          </h1>
-          <p className="text-gray-400 mb-6">Discover your next career opportunity from our curated job listings</p>
+      {/* Page header */}
+      <div className="border-b border-gray-800 bg-[#0d1120]">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="mb-6">
+            <div className="flex items-center gap-2 text-xs text-blue-400 font-medium mb-2 tracking-widest uppercase">
+              <Sparkles className="h-3.5 w-3.5" />
+              Job Discovery
+            </div>
+            <h1 className="text-3xl font-bold text-white">
+              Browse <span className="text-blue-400">Opportunities</span>
+            </h1>
+            <p className="text-gray-500 text-sm mt-1.5">
+              {allJobs.length} jobs available — find your next move
+            </p>
+          </div>
 
-          {/* Search and Filter Bar */}
-          <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 mb-6">
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search jobs, companies, or skills..."
-                  className="w-full pl-12 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
-                />
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Button
-                  onClick={() => setShowFilters(!showFilters)}
-                  variant="outline"
-                  className="border-gray-600 bg-gray-700/50 hover:bg-gray-600 text-gray-300 hover:text-white"
+          {/* Search + Controls */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Search jobs, companies, or skills..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                className="w-full pl-11 pr-10 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/20 text-sm transition-all"
+              />
+              {searchInput && (
+                <button
+                  onClick={() => setSearchInput("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
                 >
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filters
-                </Button>
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
 
-                <div className="flex border border-gray-600 rounded-lg overflow-hidden">
-                  <Button
-                    onClick={() => setViewMode("grid")}
-                    variant="ghost"
-                    size="sm"
-                    className={`px-3 py-2 ${viewMode === "grid" ? "bg-blue-600 text-white" : "text-gray-400 hover:text-white"}`}
-                  >
-                    <Grid className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    onClick={() => setViewMode("list")}
-                    variant="ghost"
-                    size="sm"
-                    className={`px-3 py-2 ${viewMode === "list" ? "bg-blue-600 text-white" : "text-gray-400 hover:text-white"}`}
-                  >
-                    <List className="h-4 w-4" />
-                  </Button>
-                </div>
+            <div className="flex gap-2">
+              {/* Sort */}
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="bg-gray-900 border border-gray-700 rounded-xl pl-4 pr-9 py-3 text-white text-sm focus:outline-none focus:border-blue-500/60 cursor-pointer appearance-none"
+                >
+                  <option value="newest">Newest</option>
+                  <option value="salary-high">Salary ↑</option>
+                  <option value="salary-low">Salary ↓</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
               </div>
+
+              {/* View toggle */}
+              <div className="flex border border-gray-700 rounded-xl overflow-hidden bg-gray-900">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`px-3 py-3 transition-colors ${viewMode === "grid" ? "bg-blue-600 text-white" : "text-gray-500 hover:text-gray-300"}`}
+                >
+                  <Grid3X3 className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`px-3 py-3 transition-colors ${viewMode === "list" ? "bg-blue-600 text-white" : "text-gray-500 hover:text-gray-300"}`}
+                >
+                  <List className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Filter toggle (mobile) */}
+              <Button
+                onClick={() => setShowFilters(!showFilters)}
+                className="md:hidden bg-gray-900 border border-gray-700 hover:bg-gray-800 text-gray-300 rounded-xl"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+              </Button>
             </div>
           </div>
-        </div>
 
-        {/* Results Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-xl font-semibold text-white">Search Results</h2>
-            <p className="text-gray-400">
-              {allJobs.length} {allJobs.length === 1 ? "job" : "jobs"} found
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 text-sm text-gray-400">
-            <span>Sort by:</span>
-            <select className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30">
-              <option>Most Recent</option>
-              <option>Salary: High to Low</option>
-              <option>Salary: Low to High</option>
-              <option>Company A-Z</option>
-            </select>
+          {/* Result count */}
+          <div className="flex items-center gap-2 mt-4 text-xs text-gray-500">
+            <TrendingUp className="h-3.5 w-3.5 text-green-500" />
+            <span className="text-green-400 font-semibold">{filteredJobs.length}</span>
+            results
+            {searchInput && (
+              <span>for "<span className="text-gray-300">{searchInput}</span>"</span>
+            )}
           </div>
         </div>
+      </div>
 
-        {/* Jobs Grid/List */}
-        {allJobs.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 bg-gray-800/50 rounded-2xl border border-gray-700">
-            <div className="p-4 rounded-full bg-gray-700 mb-4">
-              <Search className="h-12 w-12 text-gray-400" />
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="flex gap-6">
+          {/* Filters sidebar */}
+          <aside className={`w-72 flex-shrink-0 ${showFilters ? "block" : "hidden md:block"}`}>
+            <div className="sticky top-6">
+              <FilterCard onFilterChange={handleFilterChange} />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">No jobs found</h3>
-            <p className="text-gray-400 text-center max-w-md">
-              We couldn't find any jobs matching your criteria. Try adjusting your search terms or filters.
-            </p>
-            <Button
-              onClick={() => dispatch(setSearchedQuery(""))}
-              className="mt-4 bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              Clear Search
-            </Button>
-          </div>
-        ) : (
-          <div
-            className={`grid gap-6 ${
-              viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
-            }`}
-          >
-            {allJobs.map((job) => (
-              <Job key={job._id} job={job} viewMode={viewMode} />
-            ))}
-          </div>
-        )}
+          </aside>
 
-        {/* Load More Button */}
-        {allJobs.length > 0 && (
-          <div className="flex justify-center mt-12">
-            <Button
-              variant="outline"
-              className="border-gray-600 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-8 py-3"
-            >
-              Load More Jobs
-            </Button>
-          </div>
-        )}
+          {/* Jobs grid */}
+          <main className="flex-1 min-w-0">
+            {filteredJobs.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-24 rounded-2xl border border-gray-800 bg-gray-900/30">
+                <div className="h-16 w-16 rounded-2xl bg-gray-800 flex items-center justify-center mb-4">
+                  <Search className="h-7 w-7 text-gray-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">No results found</h3>
+                <p className="text-gray-500 text-sm text-center max-w-xs">
+                  Try different keywords or clear your filters.
+                </p>
+                <Button
+                  onClick={() => { setSearchInput(""); setActiveFilters({}); setActiveSalary([0, 50]) }}
+                  className="mt-5 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded-xl px-5"
+                >
+                  Clear All
+                </Button>
+              </div>
+            ) : (
+              <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"}`}>
+                {filteredJobs.map((job) => (
+                  <Job key={job._id} job={job} viewMode={viewMode} />
+                ))}
+              </div>
+            )}
+
+            {filteredJobs.length > 0 && (
+              <div className="flex justify-center mt-10">
+                <Button
+                  variant="outline"
+                  className="border-gray-700 bg-transparent hover:bg-gray-800 text-gray-400 hover:text-white px-8 rounded-xl"
+                >
+                  Load More
+                </Button>
+              </div>
+            )}
+          </main>
+        </div>
       </div>
     </div>
   )

@@ -20,9 +20,7 @@ const Home = () => {
     }
   }, []);
   return (
-    <div
-      className="bg-gray-900 min-h-screen text-white"
-    >
+    <div className="bg-[#080d1a] min-h-screen text-white">
 
       <Navbar />
       <HeroSection />

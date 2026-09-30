@@ -13,12 +13,13 @@ const jobSchema = new mongoose.Schema({
         type: String
     }],
     salary: {
-        type: Number,
+        type: String,
         required: true
     },
     experienceLevel:{
-        type:Number,
-        required:true,
+        type: String,
+        enum: ["Fresher", "Junior", "Mid-Level", "Senior"],
+        required: true,
     },
     location: {
         type: String,

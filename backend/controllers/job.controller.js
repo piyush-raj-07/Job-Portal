@@ -24,10 +24,10 @@ export const postJob = async(req,res)=>{
             requirements: Array.isArray(requirements) 
                 ? requirements 
                 : requirements.split(",").map((req) => req.trim()),
-            salary: Number(salary),
+            salary: String(salary),
             location,
             jobType,
-            experienceLevel: Number(experience),
+            experienceLevel: experience,
             position: Number(position),
             company: companyId,
             created_by: userId
@@ -145,3 +145,47 @@ export const AdminFindJob = async (req, res) => {
     }
 };
 
+    export const deleteJob = async (req, res) => {
+  try {
+    const adminId = req.user?.id;
+    const jobId = req.params.id.trim(); // 🔥 FIX HERE
+
+    const job = await Job.findOneAndDelete({
+      _id: jobId,
+      created_by: adminId,
+    });
+
+    if (!job) {
+      return res.status(404).json({
+        message: "Job not found or you do not have permission to delete this job.",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Job deleted successfully.",
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error in deleteJob:", error);
+    return res.status(500).json({
+      message: "Server error occurred while deleting the job.",
+      success: false,
+    });
+  }
+};
+
+export const getJobsByIds = async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    const jobs = await Job.find({
+      _id: { $in: ids }
+    }).populate("company");
+
+    res.json({ jobs });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching jobs" });
+  }
+};
+    

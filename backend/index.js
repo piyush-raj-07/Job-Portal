@@ -8,6 +8,7 @@ import userRouter from "./routers/user.router.js";
 import companyRouter from "./routers/company.router.js";
 import jobRouter from "./routers/job.router.js";
 import applicationRouter from "./routers/application.router.js";
+import resumeRouter from "./routers/resume.router.js";
 
 dotenv.config();
 
@@ -35,6 +36,24 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/company", companyRouter);
 app.use("/api/v1/job", jobRouter);
 app.use("/api/v1/application", applicationRouter);
+app.use("/api/v1/resume", resumeRouter);
+
+// ---------- Error Handler ----------
+// Anything a route throws without catching lands here. Without it Express
+// answers with an HTML page containing a stack trace: unparseable by the
+// client (which reads error.response.data.message) and a leak of internal
+// paths. Declared after the routes, which is the only place Express looks
+// for it.
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", req.method, req.originalUrl, err);
+
+  if (res.headersSent) return next(err);
+
+  return res.status(err.status || 500).json({
+    message: err.expose ? err.message : "Internal server error",
+    success: false,
+  });
+});
 
 // ---------- Port ----------
 const PORT = process.env.PORT || 5000;

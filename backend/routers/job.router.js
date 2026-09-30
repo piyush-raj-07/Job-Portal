@@ -1,6 +1,7 @@
 import express from "express";
-import { AdminFindJob, findJobById, getAllJobs, postJob } from "../controllers/job.controller.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { AdminFindJob, findJobById, getAllJobs, postJob,deleteJob } from "../controllers/job.controller.js";
+import { verifyJWT, isRecruiter } from "../middlewares/auth.middleware.js";
+import { getJobsByIds } from "../controllers/job.controller.js";
 
 const router = express.Router();
 
@@ -12,9 +13,13 @@ const router = express.Router();
 
 
 // Define routes for user operations
-router.route("/postJob").post(verifyJWT,postJob); // Corrected path
-router.route("/getAllJobs").get(verifyJWT,getAllJobs);       // Corrected path
+router.route("/postJob").post(verifyJWT, isRecruiter, postJob); // Corrected path
+router.get("/getAllJobs", getAllJobs);       // Corrected path
 router.route("/findJobById/:id").get(verifyJWT,findJobById); // Corrected path
-router.route("/AdminFindJob").get(verifyJWT, AdminFindJob); // Corrected path with middleware
+router.route("/AdminFindJob").get(verifyJWT, isRecruiter, AdminFindJob); // Corrected path with middleware
+router.route("/deleteJob/:id").delete(verifyJWT, isRecruiter, deleteJob);
+
+router.post("/get-by-ids", getJobsByIds);
+// Corrected path with middleware
 
 export default router;
