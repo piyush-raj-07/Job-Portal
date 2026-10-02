@@ -314,10 +314,10 @@ const ResumeBuilder = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#080d1a]">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="flex items-center justify-center gap-3 py-32 text-slate-500">
-          <Loader2 className="h-5 w-5 animate-spin text-violet-400" />
+          <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
           Loading your resume…
         </div>
       </div>
@@ -325,15 +325,15 @@ const ResumeBuilder = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#080d1a]">
+    <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="fixed top-24 right-1/4 w-72 h-72 bg-violet-700/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed top-24 right-1/4 w-72 h-72 bg-blue-200/30 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 relative z-10">
 
         <button
           onClick={() => navigate("/my-resumes")}
-          className="flex items-center gap-2 text-slate-500 hover:text-white text-sm mb-8 group transition-colors"
+          className="flex items-center gap-2 text-slate-500 hover:text-blue-700 text-sm mb-8 group transition-colors"
         >
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
           Back to My Resumes
@@ -342,7 +342,7 @@ const ResumeBuilder = () => {
         {/* Page header */}
         <div className="flex items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-extrabold text-white tracking-tight">Resume Builder</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Resume Builder</h1>
             <p className="text-slate-500 text-sm">
               {resumeId ? "Editing a saved resume." : "Fill in your details, then save."}
             </p>
@@ -352,7 +352,7 @@ const ResumeBuilder = () => {
               type="button"
               onClick={handleDownloadPdf}
               variant="outline"
-              className="border-white/10 bg-transparent hover:bg-white/5 text-slate-400 hover:text-white rounded-xl h-11 px-4"
+              className="border-slate-200 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-xl h-11 px-4"
             >
               <Download className="h-4 w-4 mr-2" /> PDF
             </Button>
@@ -360,7 +360,7 @@ const ResumeBuilder = () => {
               type="button"
               onClick={() => setAtsOpen(true)}
               variant="outline"
-              className="border-violet-500/30 bg-transparent hover:bg-violet-600/10 text-violet-300 hover:text-violet-200 rounded-xl h-11 px-4 font-semibold"
+              className="border-blue-200 bg-white hover:bg-blue-50 hover:border-blue-300 text-blue-700 hover:text-blue-800 rounded-xl h-11 px-4 font-semibold"
             >
               <Target className="h-4 w-4 mr-2" /> Tailor for a Job
             </Button>
@@ -369,7 +369,7 @@ const ResumeBuilder = () => {
               onClick={handleReview}
               disabled={reviewing}
               variant="outline"
-              className="border-violet-500/30 bg-transparent hover:bg-violet-600/10 text-violet-300 hover:text-violet-200 rounded-xl h-11 px-4 font-semibold"
+              className="border-blue-200 bg-white hover:bg-blue-50 hover:border-blue-300 text-blue-700 hover:text-blue-800 rounded-xl h-11 px-4 font-semibold"
             >
               {reviewing ? (
                 <><Loader2 className="h-4 w-4 animate-spin mr-2" />Reviewing…</>
@@ -381,7 +381,7 @@ const ResumeBuilder = () => {
               type="button"
               onClick={saveResume}
               disabled={saving}
-              className="gradient-purple hover:opacity-90 text-white rounded-xl h-11 px-5 font-semibold shadow-lg shadow-violet-900/30"
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-11 px-5 font-semibold shadow-sm shadow-blue-600/20"
             >
               {saving ? (
                 <><Loader2 className="h-4 w-4 animate-spin mr-2" />Saving…</>
@@ -400,7 +400,7 @@ const ResumeBuilder = () => {
           <div className="space-y-6">
 
             {/* Resume title */}
-            <div className="bg-[#0e1529] border border-white/5 rounded-3xl p-6 sm:p-7 shadow-2xl shadow-black/40">
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-sm">
               <Field
                 label="Resume Title"
                 value={resumeData.title}
@@ -463,17 +463,17 @@ const ResumeBuilder = () => {
                 Live Preview
               </span>
               {/* Template changes presentation only — never the resume data. */}
-              <div className="flex items-center gap-1 p-1 rounded-xl bg-white/5 border border-white/10">
+              <div className="flex flex-wrap items-center justify-end gap-1.5">
                 {TEMPLATES.map((template) => (
                   <button
                     key={template.value}
                     type="button"
                     title={template.hint}
                     onClick={() => updateSection("template", template.value)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
+                    className={`px-2.5 py-1 rounded-lg border text-[11px] font-medium transition-all ${
                       resumeData.template === template.value
-                        ? "bg-violet-600/30 text-violet-200 border border-violet-500/30"
-                        : "text-slate-500 hover:text-white border border-transparent"
+                        ? "border-blue-500 bg-blue-50 text-blue-700"
+                        : "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:text-slate-900"
                     }`}
                   >
                     {template.label}
@@ -481,7 +481,8 @@ const ResumeBuilder = () => {
                 ))}
               </div>
             </div>
-            <div className="lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto rounded-2xl">
+            {/* Light "desk" behind the white sheet so the preview reads as a document. */}
+            <div className="lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto rounded-2xl bg-slate-100 border border-slate-200 p-4 sm:p-6">
               <ResumePreview data={resumeData} />
             </div>
           </div>

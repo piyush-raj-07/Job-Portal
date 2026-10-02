@@ -6,6 +6,7 @@ import { User } from "../models/user.model.js";
 // because user.controller.js happened to load the util first; that is an
 // import-order accident, not a guarantee.
 import cloudinary from "../utils/cloudinary.js";
+import { sendApplicationStatusEmail } from "../utils/sendEmail.js";
 
 export const applyJob = async (req, res) => {
     try {
@@ -210,27 +211,64 @@ export const updateApplicationStatus = async (req, res) => {
         if (!applicationId) {
             return res.status(400).json({ message: "Application id is required" });
         }
-        if (!status) {
+        if (!status || typeof status !== "string") {
             return res.status(400).json({ message: "Status is required" });
         }
 
-        const application = await Application.findById(applicationId);
+        // The frontend sends "Accepted" / "Rejected"; the database stores lowercase
+        const newStatus = status.toLowerCase();
+        if (newStatus !== "accepted" && newStatus !== "rejected") {
+            return res.status(400).json({ message: "Status must be Accepted or Rejected", success: false });
+        }
+
+        // Also load the applicant's name and email, for the notification email
+        const application = await Application.findById(applicationId).populate("applicant", "fullname email");
         if (!application) {
             return res.status(404).json({ message: "Application not found" });
         }
 
         // Only the recruiter who posted the job can accept/reject its applications
-        const job = await Job.findById(application.job);
+        const job = await Job.findById(application.job).populate("company", "name");
         if (!job || job.created_by.toString() !== req.user._id.toString()) {
             return res.status(403).json({ message: "You can only update applications for your own jobs", success: false });
         }
 
-        application.status = status.toLowerCase();
-        await application.save();
+        // Clicking the same status twice should not email the applicant twice
+        if (application.status === newStatus) {
+            return res.status(200).json({
+                message: `This application is already ${newStatus}.`,
+                success: true,
+                emailSent: false,
+            });
+        }
+
+        // updateOne changes only the status field (see the note in applyJob
+        // about why a full save() can fail on older documents)
+        await Application.updateOne({ _id: application._id }, { $set: { status: newStatus } });
+
+        // Tell the applicant by email. If the email fails, the status is still
+        // saved, so we only log the error instead of failing the request.
+        let emailSent = false;
+        if (application.applicant?.email) {
+            try {
+                await sendApplicationStatusEmail({
+                    applicant: application.applicant,
+                    jobTitle: job.title,
+                    companyName: job.company?.name || "the company",
+                    status: newStatus,
+                });
+                emailSent = true;
+            } catch (emailError) {
+                console.error("Error sending application status email:", emailError);
+            }
+        }
 
         return res.status(200).json({
-            message: "Application status updated successfully",
+            message: emailSent
+                ? `Application ${newStatus}. The applicant has been notified by email.`
+                : `Application ${newStatus}, but the email to the applicant could not be sent.`,
             success: true,
+            emailSent,
         });
     } catch (error) {
         console.log(error);

@@ -27,18 +27,18 @@ const CompaniesTable = () => {
   if (filterCompany.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <div className="p-4 rounded-full bg-gray-700 mb-4">
-          <Building className="h-12 w-12 text-gray-400" />
+        <div className="p-4 rounded-full bg-blue-50 border border-blue-100 mb-4">
+          <Building className="h-12 w-12 text-blue-600" />
         </div>
-        <h3 className="text-xl font-semibold text-white mb-2">No companies found</h3>
-        <p className="text-gray-400 text-center max-w-md mb-6">
+        <h3 className="text-xl font-semibold text-slate-900 mb-2">No companies found</h3>
+        <p className="text-slate-500 text-center max-w-md mb-6">
           {searchCompanyByText
             ? "No companies match your search criteria."
             : "You haven't registered any companies yet."}
         </p>
         <Button
           onClick={() => navigate("/admin/companies/create")}
-          className="bg-blue-600 hover:bg-blue-700 text-white"
+          className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-sm shadow-blue-600/20"
         >
           <Plus className="h-4 w-4 mr-2" />
           Add Your First Company
@@ -48,36 +48,36 @@ const CompaniesTable = () => {
   }
 
   return (
-    <div className="p-6">
-      <Table>
-        <TableCaption className="text-gray-400 mb-4">
+    <div>
+      <Table className="[&_th:first-child]:pl-6 [&_td:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:last-child]:pr-6">
+        <TableCaption className="mt-0 py-4 text-xs text-slate-500 border-t border-slate-100">
           A list of your registered companies ({filterCompany.length})
         </TableCaption>
         <TableHeader>
-          <TableRow className="border-gray-700 hover:bg-gray-700/50">
-            <TableHead className="text-gray-300 font-semibold">Company</TableHead>
-            <TableHead className="text-gray-300 font-semibold">Location</TableHead>
-            <TableHead className="text-gray-300 font-semibold">Created Date</TableHead>
-            <TableHead className="text-right text-gray-300 font-semibold">Actions</TableHead>
+          <TableRow className="bg-slate-50 hover:bg-slate-50 border-slate-200">
+            <TableHead className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Company</TableHead>
+            <TableHead className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Location</TableHead>
+            <TableHead className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Created Date</TableHead>
+            <TableHead className="text-right text-slate-500 text-xs font-semibold uppercase tracking-wider">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filterCompany?.map((company) => (
-            <TableRow key={company._id} className="border-gray-700 hover:bg-gray-700/30 transition-colors">
+            <TableRow key={company._id} className="border-slate-100 hover:bg-blue-50/40 transition-colors">
               <TableCell>
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10 rounded-lg bg-gray-700 border border-gray-600">
+                  <Avatar className="h-10 w-10 rounded-lg bg-blue-50 border border-blue-100">
                     <AvatarImage src={company.logo || "/placeholder.svg?height=40&width=40"} />
                   </Avatar>
-                  <span className="font-medium text-white">{company.name}</span>
+                  <span className="font-medium text-slate-900">{company.name}</span>
                 </div>
               </TableCell>
-              <TableCell className="text-gray-300">
-                {company.location || <span className="text-gray-500">Not specified</span>}
+              <TableCell className="text-slate-600">
+                {company.location || <span className="text-slate-500">Not specified</span>}
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-2 text-gray-300">
-                  <Calendar className="h-4 w-4 text-gray-400" />
+                <div className="flex items-center gap-2 text-slate-600">
+                  <Calendar className="h-4 w-4 text-slate-400" />
                   <span>{company.createdAt.split("T")[0]}</span>
                 </div>
               </TableCell>
@@ -87,18 +87,18 @@ const CompaniesTable = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-gray-400 hover:text-white hover:bg-gray-700"
+                      className="h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-100"
                     >
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-48 bg-gray-800 border border-gray-700 p-2">
+                  <PopoverContent className="w-48 bg-white border border-slate-200 p-2 rounded-xl shadow-xl shadow-slate-900/10">
                     <Button
                       onClick={() => navigate(`/admin/companies/${company._id}`)}
                       variant="ghost"
-                      className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-700"
+                      className="w-full justify-start text-slate-700 hover:text-blue-700 hover:bg-blue-50"
                     >
-                      <Edit2 className="h-4 w-4 mr-2 text-blue-500" />
+                      <Edit2 className="h-4 w-4 mr-2 text-blue-600" />
                       Edit Company
                     </Button>
                   </PopoverContent>

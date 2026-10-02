@@ -28,7 +28,7 @@ const SummaryForm = ({ value, onChange, onGenerate, generating, onUndo, canUndo 
         type="button"
         onClick={onGenerate}
         disabled={generating}
-        className="gradient-purple hover:opacity-90 text-white rounded-xl h-10 px-4 text-sm font-semibold shadow-lg shadow-violet-900/30"
+        className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-10 px-4 text-sm font-semibold shadow-sm shadow-blue-600/20"
       >
         {generating ? (
           <><Loader2 className="h-4 w-4 animate-spin mr-2" />Writing…</>
@@ -42,13 +42,13 @@ const SummaryForm = ({ value, onChange, onGenerate, generating, onUndo, canUndo 
           type="button"
           variant="outline"
           onClick={onUndo}
-          className="border-white/10 bg-transparent hover:bg-white/5 text-slate-400 hover:text-white rounded-xl h-10 px-3 text-sm"
+          className="border-slate-200 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-xl h-10 px-3 text-sm"
         >
           <Undo2 className="h-3.5 w-3.5 mr-1.5" /> Undo
         </Button>
       )}
 
-      <span className="text-[11px] text-slate-600">
+      <span className="text-[11px] text-slate-500">
         Written only from your skills, education, experience and projects.
       </span>
     </div>

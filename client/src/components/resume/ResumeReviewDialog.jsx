@@ -8,9 +8,9 @@ import { CheckCircle2, AlertTriangle, Lightbulb, Loader2 } from "lucide-react"
 
 /* Colour follows the score so the headline number reads at a glance. */
 const scoreTone = (score) => {
-  if (score >= 80) return { text: "text-emerald-400", ring: "stroke-emerald-400", label: "Strong" }
-  if (score >= 60) return { text: "text-amber-400", ring: "stroke-amber-400", label: "Decent" }
-  return { text: "text-red-400", ring: "stroke-red-400", label: "Needs work" }
+  if (score >= 80) return { text: "text-emerald-600", ring: "stroke-emerald-500", label: "Strong" }
+  if (score >= 60) return { text: "text-amber-600", ring: "stroke-amber-500", label: "Decent" }
+  return { text: "text-red-600", ring: "stroke-red-500", label: "Needs work" }
 }
 
 const ScoreRing = ({ score }) => {
@@ -22,7 +22,7 @@ const ScoreRing = ({ score }) => {
   return (
     <div className="relative w-32 h-32 flex-shrink-0">
       <svg className="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r={radius} className="stroke-white/10" strokeWidth="9" fill="none" />
+        <circle cx="60" cy="60" r={radius} className="stroke-slate-200" strokeWidth="9" fill="none" />
         <circle
           cx="60" cy="60" r={radius}
           className={tone.ring}
@@ -42,17 +42,17 @@ const ScoreRing = ({ score }) => {
 
 const CriterionRow = ({ row }) => {
   const pct = row.max ? (row.score / row.max) * 100 : 0
-  const barTone = pct >= 80 ? "bg-emerald-400" : pct >= 50 ? "bg-amber-400" : "bg-red-400"
+  const barTone = pct >= 80 ? "bg-emerald-500" : pct >= 50 ? "bg-amber-500" : "bg-red-500"
 
   return (
     <div className="space-y-1">
       <div className="flex items-baseline justify-between gap-3">
-        <span className="text-xs font-medium text-slate-300">{row.name}</span>
+        <span className="text-xs font-medium text-slate-700">{row.name}</span>
         <span className="text-[11px] text-slate-500 flex-shrink-0">
           {row.score}/{row.max}
         </span>
       </div>
-      <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+      <div className="h-1.5 rounded-full bg-slate-200 overflow-hidden">
         <div className={`h-full rounded-full ${barTone}`} style={{ width: `${pct}%` }} />
       </div>
       <p className="text-[11px] text-slate-500 leading-relaxed">{row.detail}</p>
@@ -64,10 +64,10 @@ const FindingList = ({ icon: Icon, iconCls, title, items }) => {
   if (!items?.length) return null
   return (
     <div>
-      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">{title}</h3>
+      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2.5">{title}</h3>
       <ul className="space-y-2">
         {items.map((item, i) => (
-          <li key={i} className="flex gap-2.5 text-sm text-slate-300 leading-relaxed">
+          <li key={i} className="flex gap-2.5 text-sm text-slate-700 leading-relaxed">
             <Icon className={`h-4 w-4 mt-0.5 flex-shrink-0 ${iconCls}`} />
             <span>{item}</span>
           </li>
@@ -85,17 +85,17 @@ const FindingList = ({ icon: Icon, iconCls, title, items }) => {
  */
 const ResumeReviewDialog = ({ open, onClose, loading, review }) => (
   <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
-    <DialogContent className="bg-[#0e1529] border border-white/10 text-white rounded-3xl sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+    <DialogContent className="bg-white border border-slate-200 text-slate-900 rounded-3xl sm:max-w-2xl max-h-[85vh] overflow-y-auto shadow-xl shadow-slate-900/10">
       <DialogHeader>
-        <DialogTitle className="text-white">Resume Review</DialogTitle>
-        <DialogDescription className="text-slate-400">
+        <DialogTitle className="text-slate-900">Resume Review</DialogTitle>
+        <DialogDescription className="text-slate-600">
           Scored against eight fixed criteria, then reviewed for wording.
         </DialogDescription>
       </DialogHeader>
 
       {loading && (
         <div className="flex items-center justify-center gap-3 py-16 text-slate-500">
-          <Loader2 className="h-5 w-5 animate-spin text-violet-400" />
+          <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
           Reviewing your resume…
         </div>
       )}
@@ -107,7 +107,7 @@ const ResumeReviewDialog = ({ open, onClose, loading, review }) => (
           <div className="flex flex-col sm:flex-row items-center gap-6">
             <ScoreRing score={review.score} />
             <div className="min-w-0 flex-1 space-y-3">
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-slate-600">
                 This score is calculated from the breakdown below, so it is the same
                 every time for the same resume.
               </p>
@@ -128,22 +128,22 @@ const ResumeReviewDialog = ({ open, onClose, loading, review }) => (
             </div>
           )}
 
-          <div className="space-y-6 pt-2 border-t border-white/5">
+          <div className="space-y-6 pt-2 border-t border-slate-100">
             <FindingList
               icon={CheckCircle2}
-              iconCls="text-emerald-400"
+              iconCls="text-emerald-600"
               title="Strengths"
               items={review.strengths}
             />
             <FindingList
               icon={AlertTriangle}
-              iconCls="text-amber-400"
+              iconCls="text-amber-600"
               title="Improvements"
               items={review.issues}
             />
             <FindingList
               icon={Lightbulb}
-              iconCls="text-violet-400"
+              iconCls="text-blue-600"
               title="Suggestions"
               items={review.suggestions}
             />

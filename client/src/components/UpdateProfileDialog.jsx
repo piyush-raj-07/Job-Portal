@@ -80,24 +80,21 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
   }
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-        className="sm:max-w-[500px] bg-slate-800/90 backdrop-blur-md text-white border border-slate-700/50 shadow-xl"
-        onInteractOutside={() => setOpen(false)}
+        className="sm:max-w-[500px] bg-white text-slate-900 border border-slate-200 shadow-xl shadow-slate-900/10"
       >
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center">
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-500 bg-clip-text text-transparent">
-              Update Profile
-            </span>
+          <DialogTitle className="text-2xl font-bold text-center text-slate-900 tracking-tight">
+            Update Profile
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={submitHandler} className="mt-4">
           <div className="space-y-5">
             <div className="space-y-2">
-              <Label className="flex items-center gap-2 text-slate-300">
-                <User className="h-4 w-4 text-blue-400" />
+              <Label className="flex items-center gap-2 text-slate-700">
+                <User className="h-4 w-4 text-blue-600" />
                 Full Name
               </Label>
               <Input
@@ -105,14 +102,14 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                 type="text"
                 value={input.fullname}
                 onChange={changeEventHandler}
-                className="bg-slate-700/50 border-slate-600/50 text-white focus:border-blue-500 focus:ring-blue-500/20"
+                className="bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:border-blue-500 focus-visible:ring-blue-500/20 focus-visible:ring-offset-0"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="flex items-center gap-2 text-slate-300">
-                <Mail className="h-4 w-4 text-blue-400" />
+              <Label className="flex items-center gap-2 text-slate-700">
+                <Mail className="h-4 w-4 text-blue-600" />
                 Email Address
               </Label>
               <Input
@@ -120,54 +117,54 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                 type="email"
                 value={input.email}
                 onChange={changeEventHandler}
-                className="bg-slate-700/50 border-slate-600/50 text-white focus:border-blue-500 focus:ring-blue-500/20"
+                className="bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:border-blue-500 focus-visible:ring-blue-500/20 focus-visible:ring-offset-0"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="flex items-center gap-2 text-slate-300">
-                <Phone className="h-4 w-4 text-blue-400" />
+              <Label className="flex items-center gap-2 text-slate-700">
+                <Phone className="h-4 w-4 text-blue-600" />
                 Phone Number
               </Label>
               <Input
                 name="phoneNumber"
                 value={input.phoneNumber}
                 onChange={changeEventHandler}
-                className="bg-slate-700/50 border-slate-600/50 text-white focus:border-blue-500 focus:ring-blue-500/20"
+                className="bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:border-blue-500 focus-visible:ring-blue-500/20 focus-visible:ring-offset-0"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="flex items-center gap-2 text-slate-300">
-                <User className="h-4 w-4 text-blue-400" />
+              <Label className="flex items-center gap-2 text-slate-700">
+                <User className="h-4 w-4 text-blue-600" />
                 Bio
               </Label>
               <Input
                 name="bio"
                 value={input.bio}
                 onChange={changeEventHandler}
-                className="bg-slate-700/50 border-slate-600/50 text-white focus:border-blue-500 focus:ring-blue-500/20"
+                className="bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:border-blue-500 focus-visible:ring-blue-500/20 focus-visible:ring-offset-0"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="flex items-center gap-2 text-slate-300">
-                <Award className="h-4 w-4 text-blue-400" />
+              <Label className="flex items-center gap-2 text-slate-700">
+                <Award className="h-4 w-4 text-blue-600" />
                 Skills (comma separated)
               </Label>
               <Input
                 name="skills"
                 value={input.skills}
                 onChange={changeEventHandler}
-                className="bg-slate-700/50 border-slate-600/50 text-white focus:border-blue-500 focus:ring-blue-500/20"
+                className="bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:border-blue-500 focus-visible:ring-blue-500/20 focus-visible:ring-offset-0"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="flex items-center gap-2 text-slate-300">
-                <FileText className="h-4 w-4 text-blue-400" />
+              <Label className="flex items-center gap-2 text-slate-700">
+                <FileText className="h-4 w-4 text-blue-600" />
                 Resume (PDF)
               </Label>
               <Input
@@ -175,7 +172,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                 type="file"
                 accept="application/pdf"
                 onChange={fileChangeHandler}
-                className="bg-slate-700/50 border-slate-600/50 text-white file:bg-slate-600 file:text-white file:border-0 file:rounded file:px-3 file:py-2 hover:file:bg-slate-500 focus:border-blue-500 focus:ring-blue-500/20"
+                className="h-11 py-1.5 items-center cursor-pointer bg-white border-slate-200 text-slate-600 file:mr-3 file:h-8 file:px-3 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 file:font-medium file:cursor-pointer hover:file:bg-blue-100 focus-visible:border-blue-500 focus-visible:ring-blue-500/20 focus-visible:ring-offset-0"
               />
             </div>
           </div>
@@ -185,11 +182,11 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              className="border-slate-600/50 bg-slate-700/30 hover:bg-slate-600/50 text-slate-300"
+              className="border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900"
             >
               Cancel
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-medium" disabled={loading}>
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm shadow-blue-600/20" disabled={loading}>
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

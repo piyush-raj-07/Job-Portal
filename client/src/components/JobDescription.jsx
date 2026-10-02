@@ -8,7 +8,7 @@ import { toast } from "sonner"
 import {
   Briefcase, MapPin, DollarSign, Users, Clock, GraduationCap,
   Building, ArrowLeft, Calendar, CheckCircle2, Send, Share2,
-  Bookmark, ExternalLink, Star, Zap,
+  ExternalLink, Star, Zap,
 } from "lucide-react"
 import { Avatar, AvatarImage } from "./ui/avatar"
 import ApplicationFormModal from "./ApplicationFormModal"
@@ -23,7 +23,6 @@ const JobDescription = () => {
   const [isApplied, setIsApplied] = useState(isInitiallyApplied)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSaved, setIsSaved] = useState(false)
 
   const BASE_URL = import.meta.env.VITE_API_BASE_URL
   const params = useParams()
@@ -91,14 +90,14 @@ const JobDescription = () => {
     .split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()
 
   const highlights = [
-    { icon: MapPin, label: "Location", value: singleJob?.location || "Remote", color: "text-violet-400", bg: "bg-violet-500/10 border-violet-500/20" },
-    { icon: Briefcase, label: "Job Type", value: singleJob?.jobType, color: "text-indigo-400", bg: "bg-indigo-500/10 border-indigo-500/20" },
-    { icon: DollarSign, label: "Salary", value: singleJob?.salary, color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20" },
-    { icon: GraduationCap, label: "Experience", value: singleJob?.experienceLevel, color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
+    { icon: MapPin, label: "Location", value: singleJob?.location || "Remote", color: "text-blue-600", bg: "bg-blue-50 border-blue-100" },
+    { icon: Briefcase, label: "Job Type", value: singleJob?.jobType, color: "text-sky-600", bg: "bg-sky-50 border-sky-100" },
+    { icon: DollarSign, label: "Salary", value: singleJob?.salary, color: "text-amber-700", bg: "bg-amber-50 border-amber-200" },
+    { icon: GraduationCap, label: "Experience", value: singleJob?.experienceLevel, color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-200" },
   ]
 
   return (
-    <div className="min-h-screen bg-[#080d1a]">
+    <div className="min-h-screen bg-background">
       <Navbar />
 
       <ApplicationFormModal
@@ -108,26 +107,22 @@ const JobDescription = () => {
         isSubmitting={isSubmitting}
       />
 
-      {/* Ambient glow */}
-      <div className="fixed top-24 left-1/5 w-96 h-96 bg-violet-700/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="fixed bottom-24 right-1/5 w-72 h-72 bg-indigo-700/5 rounded-full blur-3xl pointer-events-none" />
-
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 relative z-10">
 
         {/* ── Back button ── */}
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-slate-500 hover:text-white text-sm mb-8 group transition-colors"
+          className="flex items-center gap-2 text-slate-500 hover:text-blue-700 text-sm mb-8 group transition-colors"
         >
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
           Back to Jobs
         </button>
 
         {/* ── Hero card ── */}
-        <div className="bg-[#0e1529] border border-white/5 rounded-3xl overflow-hidden shadow-2xl shadow-black/40 mb-6">
+        <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm mb-6">
 
-          {/* Purple top accent bar */}
-          <div className="h-1 w-full bg-gradient-to-r from-violet-600 via-indigo-500 to-purple-600" />
+          {/* Top accent bar */}
+          <div className="h-1 w-full gradient-primary" />
 
           <div className="p-7 sm:p-10">
             {/* Company + Title row */}
@@ -135,25 +130,25 @@ const JobDescription = () => {
               <div className="flex items-center gap-5">
                 {/* Company logo / avatar */}
                 <div className="relative flex-shrink-0">
-                  <div className="w-16 h-16 rounded-2xl gradient-purple flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-violet-900/40 overflow-hidden">
+                  <div className="w-16 h-16 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-700 font-bold text-lg overflow-hidden">
                     {singleJob?.company?.logo
                       ? <img src={singleJob.company.logo} alt="" className="w-full h-full object-cover" />
                       : initials}
                   </div>
                   {daysAgo !== null && daysAgo <= 2 && (
-                    <span className="absolute -top-1.5 -right-1.5 text-[9px] font-black bg-violet-600 text-white px-1.5 py-0.5 rounded-full border border-[#080d1a]">
+                    <span className="absolute -top-1.5 -right-1.5 text-[9px] font-bold bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded-full border border-emerald-200 shadow-sm">
                       NEW
                     </span>
                   )}
                 </div>
 
                 <div>
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-1">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-1">
                     {singleJob?.title}
                   </h1>
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-slate-400">
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-slate-600">
                     <span className="flex items-center gap-1.5">
-                      <Building className="h-3.5 w-3.5 text-violet-400" />
+                      <Building className="h-3.5 w-3.5 text-blue-600" />
                       {singleJob?.company?.name}
                     </span>
                     {daysAgo !== null && (
@@ -173,17 +168,8 @@ const JobDescription = () => {
               {/* Action buttons */}
               <div className="flex items-center gap-2 flex-shrink-0">
                 <button
-                  onClick={() => setIsSaved(!isSaved)}
-                  className={`p-2.5 rounded-xl border transition-all ${isSaved
-                    ? "bg-violet-600/20 border-violet-500/40 text-violet-300"
-                    : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300 hover:border-white/20"}`}
-                  title="Save job"
-                >
-                  <Bookmark className={`h-4.5 w-4.5 ${isSaved ? "fill-violet-400" : ""}`} />
-                </button>
-                <button
                   onClick={() => { navigator.clipboard.writeText(window.location.href); toast.success("Link copied!") }}
-                  className="p-2.5 rounded-xl border bg-white/5 border-white/10 text-slate-500 hover:text-slate-300 hover:border-white/20 transition-all"
+                  className="p-2.5 rounded-xl border bg-white border-slate-200 text-slate-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 transition-all"
                   title="Share"
                 >
                   <Share2 className="h-4.5 w-4.5" />
@@ -192,11 +178,11 @@ const JobDescription = () => {
                   onClick={isApplied ? undefined : handleApplyClick}
                   disabled={isApplied}
                   className={`px-6 h-11 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all ${isApplied
-                    ? "bg-white/5 border border-white/10 text-slate-500 cursor-not-allowed"
-                    : "gradient-purple hover:opacity-90 text-white shadow-lg shadow-violet-900/40 glow-purple"}`}
+                    ? "bg-slate-50 border border-slate-200 text-slate-500 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm shadow-blue-600/20"}`}
                 >
                   {isApplied
-                    ? <><CheckCircle2 className="h-4 w-4 text-emerald-400" /> Applied</>
+                    ? <><CheckCircle2 className="h-4 w-4 text-emerald-600" /> Applied</>
                     : <><Send className="h-4 w-4" /> Apply Now</>}
                 </Button>
               </div>
@@ -210,7 +196,7 @@ const JobDescription = () => {
                     <Icon className={`h-3.5 w-3.5 ${color}`} />
                     {label}
                   </div>
-                  <p className="text-white font-semibold text-sm leading-snug">{value || "—"}</p>
+                  <p className="text-slate-900 font-semibold text-sm leading-snug">{value || "—"}</p>
                 </div>
               ))}
             </div>
@@ -224,38 +210,48 @@ const JobDescription = () => {
           <div className="lg:col-span-2 space-y-6">
 
             {/* About the role */}
-            <div className="bg-[#0e1529] border border-white/5 rounded-3xl p-7 shadow-lg shadow-black/30">
+            <div className="bg-white border border-slate-200 rounded-3xl p-7 shadow-sm">
               <div className="flex items-center gap-2.5 mb-5">
-                <div className="w-8 h-8 rounded-xl gradient-purple flex items-center justify-center flex-shrink-0 shadow-md shadow-violet-900/30">
-                  <Zap className="h-4 w-4 text-white" />
+                <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center flex-shrink-0">
+                  <Zap className="h-4 w-4 text-blue-600" />
                 </div>
-                <h2 className="text-lg font-bold text-white">About the Role</h2>
+                <h2 className="text-lg font-bold text-slate-900">About the Role</h2>
               </div>
-              <p className="text-slate-400 leading-relaxed text-sm whitespace-pre-line">
+              <p className="text-slate-600 leading-relaxed text-sm whitespace-pre-line">
                 {singleJob?.description || "No description provided."}
               </p>
             </div>
 
             {/* Requirements (if skills / requirements exist — graceful fallback) */}
             {singleJob?.requirements && (
-              <div className="bg-[#0e1529] border border-white/5 rounded-3xl p-7 shadow-lg shadow-black/30">
+              <div className="bg-white border border-slate-200 rounded-3xl p-7 shadow-sm">
                 <div className="flex items-center gap-2.5 mb-5">
-                  <div className="w-8 h-8 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center flex-shrink-0">
-                    <Star className="h-4 w-4 text-indigo-400" />
+                  <div className="w-8 h-8 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center flex-shrink-0">
+                    <Star className="h-4 w-4 text-sky-600" />
                   </div>
-                  <h2 className="text-lg font-bold text-white">Requirements</h2>
+                  <h2 className="text-lg font-bold text-slate-900">Requirements</h2>
                 </div>
-                <p className="text-slate-400 leading-relaxed text-sm whitespace-pre-line">
-                  {singleJob.requirements}
-                </p>
+                {Array.isArray(singleJob.requirements) ? (
+                  <div className="flex flex-wrap gap-2">
+                    {singleJob.requirements.filter(Boolean).map((req, i) => (
+                      <span key={`${req}-${i}`} className="px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-100 text-blue-700 text-xs font-medium">
+                        {req}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-slate-600 leading-relaxed text-sm whitespace-pre-line">
+                    {singleJob.requirements}
+                  </p>
+                )}
               </div>
             )}
 
             {/* Bottom apply CTA */}
-            <div className="bg-gradient-to-br from-violet-600/10 to-indigo-600/10 border border-violet-500/20 rounded-3xl p-7 flex flex-col sm:flex-row items-center gap-5">
+            <div className="bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100 rounded-3xl p-7 flex flex-col sm:flex-row items-center gap-5">
               <div className="flex-1">
-                <h3 className="text-white font-bold text-lg mb-1">Ready to apply?</h3>
-                <p className="text-slate-400 text-sm">
+                <h3 className="text-slate-900 font-bold text-lg mb-1">Ready to apply?</h3>
+                <p className="text-slate-600 text-sm">
                   {isApplied
                     ? "You've already submitted your application. Good luck! 🎉"
                     : "Join the team — submit your application in under 2 minutes."}
@@ -266,11 +262,11 @@ const JobDescription = () => {
                 disabled={isApplied}
                 size="lg"
                 className={`px-8 h-11 rounded-xl font-semibold text-sm flex items-center gap-2 flex-shrink-0 transition-all ${isApplied
-                  ? "bg-white/5 border border-white/10 text-slate-500 cursor-not-allowed"
-                  : "gradient-purple hover:opacity-90 text-white shadow-lg shadow-violet-900/40"}`}
+                  ? "bg-white border border-slate-200 text-slate-500 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm shadow-blue-600/20"}`}
               >
                 {isApplied
-                  ? <><CheckCircle2 className="h-4 w-4 text-emerald-400" /> Applied</>
+                  ? <><CheckCircle2 className="h-4 w-4 text-emerald-600" /> Applied</>
                   : <><Send className="h-4 w-4" /> Apply for this Job</>}
               </Button>
             </div>
@@ -280,14 +276,14 @@ const JobDescription = () => {
           <div className="space-y-5">
 
             {/* Job Details card */}
-            <div className="bg-[#0e1529] border border-white/5 rounded-3xl p-6 shadow-lg shadow-black/30">
-              <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-5">Job Details</h3>
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+              <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-5">Job Details</h3>
               <div className="space-y-4">
                 {[
-                  { icon: Users, label: "Open Positions", value: singleJob?.position, color: "text-violet-400", iconBg: "bg-violet-500/10" },
-                  { icon: Calendar, label: "Date Posted", value: singleJob?.createdAt?.split("T")[0], color: "text-indigo-400", iconBg: "bg-indigo-500/10" },
-                  { icon: Clock, label: "Your Status", value: isApplied ? "Applied ✓" : "Not Applied", color: isApplied ? "text-emerald-400" : "text-slate-400", iconBg: isApplied ? "bg-emerald-500/10" : "bg-white/5" },
-                  { icon: Users, label: "Total Applicants", value: `${singleJob?.applications?.length || 0} people`, color: "text-amber-400", iconBg: "bg-amber-500/10" },
+                  { icon: Users, label: "Open Positions", value: singleJob?.position, color: "text-blue-600", iconBg: "bg-blue-50" },
+                  { icon: Calendar, label: "Date Posted", value: singleJob?.createdAt?.split("T")[0], color: "text-sky-600", iconBg: "bg-sky-50" },
+                  { icon: Clock, label: "Your Status", value: isApplied ? "Applied ✓" : "Not Applied", color: isApplied ? "text-emerald-600" : "text-slate-500", iconBg: isApplied ? "bg-emerald-50" : "bg-slate-100" },
+                  { icon: Users, label: "Total Applicants", value: `${singleJob?.applications?.length || 0} people`, color: "text-amber-700", iconBg: "bg-amber-50" },
                 ].map(({ icon: Icon, label, value, color, iconBg }) => (
                   <div key={label} className="flex items-center gap-3">
                     <div className={`w-9 h-9 rounded-xl ${iconBg} flex items-center justify-center flex-shrink-0`}>
@@ -295,7 +291,7 @@ const JobDescription = () => {
                     </div>
                     <div className="min-w-0">
                       <p className="text-slate-500 text-xs mb-0.5">{label}</p>
-                      <p className={`text-sm font-semibold ${color === "text-slate-400" ? "text-white" : color}`}>
+                      <p className={`text-sm font-semibold ${color === "text-slate-500" ? "text-slate-900" : color}`}>
                         {value || "—"}
                       </p>
                     </div>
@@ -305,22 +301,22 @@ const JobDescription = () => {
             </div>
 
             {/* Company card */}
-            <div className="bg-[#0e1529] border border-white/5 rounded-3xl p-6 shadow-lg shadow-black/30">
-              <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4">About the Company</h3>
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+              <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-4">About the Company</h3>
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl gradient-purple flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-md shadow-violet-900/30 overflow-hidden">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs flex-shrink-0 overflow-hidden">
                   {singleJob?.company?.logo
                     ? <img src={singleJob.company.logo} alt="" className="w-full h-full object-cover" />
                     : initials}
                 </div>
                 <div>
-                  <p className="text-white font-semibold text-sm">{singleJob?.company?.name}</p>
+                  <p className="text-slate-900 font-semibold text-sm">{singleJob?.company?.name}</p>
                   {singleJob?.company?.website && (
                     <a
                       href={singleJob.company.website}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-violet-400 text-xs flex items-center gap-1 hover:text-violet-300 transition-colors"
+                      className="text-blue-600 text-xs flex items-center gap-1 hover:text-blue-700 transition-colors"
                     >
                       Visit website <ExternalLink className="h-3 w-3" />
                     </a>
@@ -338,7 +334,7 @@ const JobDescription = () => {
             {!isApplied && (
               <button
                 onClick={handleApplyClick}
-                className="w-full gradient-purple hover:opacity-90 text-white rounded-2xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-violet-900/40 glow-purple transition-all"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-2xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 shadow-sm shadow-blue-600/20 transition-all"
               >
                 <Send className="h-4 w-4" />
                 Quick Apply

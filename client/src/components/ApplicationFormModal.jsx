@@ -39,18 +39,18 @@ const ApplicationFormModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl">
+    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-md shadow-xl shadow-slate-900/10">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-700">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
           <div>
-            <h2 className="text-xl font-bold text-white">Submit Application</h2>
-            <p className="text-slate-400 text-sm mt-0.5">Fill in your details below</p>
+            <h2 className="text-xl font-bold text-slate-900">Submit Application</h2>
+            <p className="text-slate-500 text-sm mt-0.5">Fill in your details below</p>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-700"
+            className="text-slate-400 hover:text-slate-900 transition-colors p-1 rounded-lg hover:bg-slate-100"
           >
             <X className="h-5 w-5" />
           </button>
@@ -61,25 +61,25 @@ const ApplicationFormModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
 
           {/* Phone Number */}
           <div>
-            <label className="text-slate-300 text-sm font-medium mb-1.5 block">
-              Phone Number <span className="text-red-400">*</span>
+            <label className="text-slate-700 text-sm font-medium mb-1.5 block">
+              Phone Number <span className="text-red-600">*</span>
             </label>
             <input
               type="tel"
               value={formData.phoneNumber}
               onChange={(e) => setFormData((prev) => ({ ...prev, phoneNumber: e.target.value }))}
               required
-              className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white
-                         placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1
-                         focus:ring-blue-500/50 transition-colors"
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900
+                         placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2
+                         focus:ring-blue-500/20 transition-colors"
               placeholder="Enter your phone number"
             />
           </div>
 
           {/* Years of Experience */}
           <div>
-            <label className="text-slate-300 text-sm font-medium mb-1.5 block">
-              Years of Experience <span className="text-red-400">*</span>
+            <label className="text-slate-700 text-sm font-medium mb-1.5 block">
+              Years of Experience <span className="text-red-600">*</span>
             </label>
             <input
               type="number"
@@ -88,17 +88,17 @@ const ApplicationFormModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
               value={formData.yearsOfExperience}
               onChange={(e) => setFormData((prev) => ({ ...prev, yearsOfExperience: e.target.value }))}
               required
-              className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white
-                         placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1
-                         focus:ring-blue-500/50 transition-colors"
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900
+                         placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2
+                         focus:ring-blue-500/20 transition-colors"
               placeholder="e.g. 2"
             />
           </div>
 
           {/* Resume */}
           <div>
-            <label className="text-slate-300 text-sm font-medium mb-2 block">
-              Resume <span className="text-red-400">*</span>
+            <label className="text-slate-700 text-sm font-medium mb-2 block">
+              Resume <span className="text-red-600">*</span>
             </label>
 
             {/* Hidden file input — triggered via ref, lives outside any other clickable element */}
@@ -117,8 +117,8 @@ const ApplicationFormModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
                   onClick={() => setFormData((prev) => ({ ...prev, useExistingResume: true }))}
                   className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
                     formData.useExistingResume
-                      ? "border-blue-500 bg-blue-500/10"
-                      : "border-slate-600 hover:border-slate-500 bg-slate-700/30"
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-slate-200 hover:border-slate-300 bg-slate-50"
                   }`}
                 >
                   <input
@@ -126,12 +126,12 @@ const ApplicationFormModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
                     name="resumeChoice"
                     checked={formData.useExistingResume}
                     onChange={() => setFormData((prev) => ({ ...prev, useExistingResume: true }))}
-                    className="accent-blue-500"
+                    className="accent-blue-600"
                   />
-                  <FileText className="h-4 w-4 text-blue-400 shrink-0" />
+                  <FileText className="h-4 w-4 text-blue-600 shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-slate-300 text-sm font-medium">Use existing resume</p>
-                    <p className="text-blue-400 text-xs truncate">
+                    <p className="text-slate-700 text-sm font-medium">Use existing resume</p>
+                    <p className="text-blue-600 text-xs truncate">
                       {user.profile.resumeOriginalName || "Uploaded Resume"}
                     </p>
                   </div>
@@ -143,8 +143,8 @@ const ApplicationFormModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
                 onClick={handleUploadClick}
                 className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
                   !formData.useExistingResume
-                    ? "border-blue-500 bg-blue-500/10"
-                    : "border-slate-600 hover:border-slate-500 bg-slate-700/30"
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-slate-200 hover:border-slate-300 bg-slate-50"
                 }`}
               >
                 <input
@@ -152,14 +152,14 @@ const ApplicationFormModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
                   name="resumeChoice"
                   checked={!formData.useExistingResume}
                   readOnly
-                  className="accent-blue-500 pointer-events-none"
+                  className="accent-blue-600 pointer-events-none"
                 />
-                <Upload className="h-4 w-4 text-slate-400 shrink-0" />
+                <Upload className="h-4 w-4 text-slate-500 shrink-0" />
                 <div className="min-w-0">
-                  <p className="text-slate-300 text-sm font-medium">
+                  <p className="text-slate-700 text-sm font-medium">
                     {formData.resumeFile ? "Resume selected" : "Upload new resume"}
                   </p>
-                  <p className="text-slate-400 text-xs truncate">
+                  <p className="text-slate-500 text-xs truncate">
                     {formData.resumeFile
                       ? formData.resumeFile.name
                       : "Click to browse — PDF only, max 5MB"}
@@ -175,14 +175,14 @@ const ApplicationFormModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
               type="button"
               onClick={onClose}
               variant="ghost"
-              className="flex-1 text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-600"
+              className="flex-1 bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-100 border border-slate-200"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-60 disabled:cursor-not-allowed"
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-sm shadow-blue-600/20 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">

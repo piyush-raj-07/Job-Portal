@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './components/Home'
 import Login from './components/auth/Login'
 import Signup from './components/auth/Signup'
+import VerifyEmail from './components/auth/VerifyEmail'
 import Jobs from './components/Jobs'
 import Profile from './components/Profile'
 import JobDescription from './components/JobDescription'
@@ -28,6 +29,7 @@ const App = () => {
     { path: '/', element: <Home /> },
     { path: '/login', element: <Login /> },
     { path: '/signup', element: <Signup /> },
+    { path: '/verify-email', element: <VerifyEmail /> }, // ?token=... comes from the email link
     { path: '/jobs', element: <Jobs /> },
     { path: '/profile', element: <Profile /> },
     { path: '/my-resumes', element: <MyResumes /> },
@@ -48,7 +50,7 @@ const App = () => {
   if (!authChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-violet-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
       </div>
     )
   }

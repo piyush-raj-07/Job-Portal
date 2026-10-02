@@ -73,20 +73,20 @@ const AdminJobsTable = () => {
   if (filterJobs.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <div className="p-4 rounded-full bg-gray-700 mb-4">
-          <Briefcase className="h-12 w-12 text-gray-400" />
+        <div className="p-4 rounded-full bg-blue-50 border border-blue-100 mb-4">
+          <Briefcase className="h-12 w-12 text-blue-600" />
         </div>
-        <h3 className="text-xl font-semibold text-white mb-2">
+        <h3 className="text-xl font-semibold text-slate-900 mb-2">
           No jobs found
         </h3>
-        <p className="text-gray-400 text-center max-w-md mb-6">
+        <p className="text-slate-500 text-center max-w-md mb-6">
           {searchJobByText
             ? "No jobs match your search criteria."
             : "You haven't posted any jobs yet."}
         </p>
         <Button
           onClick={() => navigate("/admin/jobs/create")}
-          className="bg-blue-600 hover:bg-blue-700 text-white"
+          className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-sm shadow-blue-600/20"
         >
           <Plus className="h-4 w-4 mr-2" />
           Post Your First Job
@@ -97,19 +97,19 @@ const AdminJobsTable = () => {
 
   // 🧾 Table
   return (
-    <div className="p-6">
-      <Table>
-        <TableCaption className="text-gray-400 mb-4">
+    <div>
+      <Table className="[&_th:first-child]:pl-6 [&_td:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:last-child]:pr-6">
+        <TableCaption className="mt-0 py-4 text-xs text-slate-500 border-t border-slate-100">
           A list of your recent posted jobs ({filterJobs.length})
         </TableCaption>
 
         <TableHeader>
-          <TableRow className="border-gray-700">
-            <TableHead className="text-gray-300">Company</TableHead>
-            <TableHead className="text-gray-300">Role</TableHead>
-            <TableHead className="text-gray-300">Date Posted</TableHead>
-            <TableHead className="text-gray-300">Status</TableHead>
-            <TableHead className="text-right text-gray-300">
+          <TableRow className="bg-slate-50 hover:bg-slate-50 border-slate-200">
+            <TableHead className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Company</TableHead>
+            <TableHead className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Role</TableHead>
+            <TableHead className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Date Posted</TableHead>
+            <TableHead className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Status</TableHead>
+            <TableHead className="text-right text-slate-500 text-xs font-semibold uppercase tracking-wider">
               Actions
             </TableHead>
           </TableRow>
@@ -119,14 +119,14 @@ const AdminJobsTable = () => {
           {filterJobs.map((job) => (
             <TableRow
               key={job._id}
-              className="border-gray-700 hover:bg-gray-700/30"
+              className="border-slate-100 hover:bg-blue-50/40 transition-colors"
             >
               <TableCell>
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-gray-700">
-                    <Building className="h-4 w-4 text-blue-500" />
+                  <div className="p-2 rounded-lg bg-blue-50 border border-blue-100">
+                    <Building className="h-4 w-4 text-blue-600" />
                   </div>
-                  <span className="font-medium text-white">
+                  <span className="font-medium text-slate-900">
                     {job?.company?.name}
                   </span>
                 </div>
@@ -134,24 +134,24 @@ const AdminJobsTable = () => {
 
               <TableCell>
                 <div>
-                  <div className="font-medium text-white">
+                  <div className="font-medium text-slate-900">
                     {job?.title}
                   </div>
-                  <div className="text-sm text-gray-400">
+                  <div className="text-sm text-slate-500">
                     {job?.jobType}
                   </div>
                 </div>
               </TableCell>
 
               <TableCell>
-                <div className="flex items-center gap-2 text-gray-300">
-                  <Calendar className="h-4 w-4 text-gray-400" />
+                <div className="flex items-center gap-2 text-slate-600">
+                  <Calendar className="h-4 w-4 text-slate-400" />
                   <span>{job?.createdAt?.split("T")[0]}</span>
                 </div>
               </TableCell>
 
               <TableCell>
-                <span className="px-3 py-1 rounded-full text-xs bg-green-900/30 text-green-400">
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                   Active
                 </span>
               </TableCell>
@@ -162,19 +162,19 @@ const AdminJobsTable = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="text-gray-400 hover:text-white"
+                      className="text-slate-400 hover:text-slate-900 hover:bg-slate-100"
                     >
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </PopoverTrigger>
 
-                  <PopoverContent className="w-48 bg-gray-800 border border-gray-700 p-2">
+                  <PopoverContent className="w-48 bg-white border border-slate-200 p-2 rounded-xl shadow-xl shadow-slate-900/10">
                     <Button
                       onClick={() =>
                         navigate(`/admin/jobs/${job._id}/applicants`)
                       }
                       variant="ghost"
-                      className="w-full justify-start text-gray-300 hover:bg-gray-700"
+                      className="w-full justify-start text-slate-700 hover:text-blue-700 hover:bg-blue-50"
                     >
                       <Eye className="h-4 w-4 mr-2" />
                       View Applicants
@@ -183,7 +183,7 @@ const AdminJobsTable = () => {
                     <Button
                       onClick={() => handleDeleteJob(job._id)}
                       variant="ghost"
-                      className="w-full justify-start text-red-400 hover:bg-red-900/20"
+                      className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
                       Delete Job

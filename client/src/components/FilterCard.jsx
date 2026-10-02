@@ -121,10 +121,10 @@ const FilterCard = ({ onFilterChange }) => {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20">
-            <SlidersHorizontal className="h-4 w-4 text-blue-400" />
+          <div className="p-1.5 rounded-lg bg-blue-50 border border-blue-200">
+            <SlidersHorizontal className="h-4 w-4 text-blue-600" />
           </div>
-          <span className="font-semibold text-white text-sm">Filters</span>
+          <span className="font-semibold text-slate-900 text-sm">Filters</span>
           {activeCount > 0 && (
             <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full font-medium">
               {activeCount}
@@ -134,7 +134,7 @@ const FilterCard = ({ onFilterChange }) => {
         {activeCount > 0 && (
           <button
             onClick={clearAll}
-            className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors"
+            className="text-xs text-red-600 hover:text-red-700 flex items-center gap-1 transition-colors"
           >
             <X className="h-3 w-3" /> Clear all
           </button>
@@ -143,14 +143,14 @@ const FilterCard = ({ onFilterChange }) => {
 
       {/* Active Chips */}
       {allActiveChips.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-4 p-3 bg-blue-500/5 border border-blue-500/10 rounded-xl">
+        <div className="flex flex-wrap gap-2 mb-4 p-3 bg-blue-50 border border-blue-100 rounded-xl">
           {allActiveChips.map((chip, i) => (
             <span
               key={i}
-              className="flex items-center gap-1 text-xs bg-blue-900/40 border border-blue-700/40 text-blue-300 px-2.5 py-1 rounded-full"
+              className="flex items-center gap-1 text-xs bg-white border border-blue-200 text-blue-700 px-2.5 py-1 rounded-full"
             >
               {chip.label}
-              <button onClick={() => removeChip(chip)} className="hover:text-white ml-0.5">
+              <button onClick={() => removeChip(chip)} className="text-blue-400 hover:text-red-600 transition-colors ml-0.5">
                 <X className="h-3 w-3" />
               </button>
             </span>
@@ -159,13 +159,13 @@ const FilterCard = ({ onFilterChange }) => {
       )}
 
       {/* Salary Slider */}
-      <div className="mb-3 bg-gray-800/60 border border-gray-700/50 rounded-xl overflow-hidden">
+      <div className="mb-3 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
         <div className="flex items-center justify-between p-4 pb-2">
-          <div className="flex items-center gap-2 text-sm font-medium text-gray-200">
-            <DollarSign className="h-4 w-4 text-amber-400" />
+          <div className="flex items-center gap-2 text-sm font-medium text-slate-800">
+            <DollarSign className="h-4 w-4 text-amber-600" />
             Salary Range
           </div>
-          <span className="text-xs font-semibold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-full">
+          <span className="text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
             {salaryRange[1] === 50 ? "Any" : `≤ ${salaryRange[1]} LPA`}
           </span>
         </div>
@@ -177,12 +177,12 @@ const FilterCard = ({ onFilterChange }) => {
             step={1}
             value={salaryRange[1]}
             onChange={handleSalary}
-            className="w-full h-1.5 appearance-none rounded-full cursor-pointer accent-blue-500"
+            className="w-full h-1.5 appearance-none rounded-full cursor-pointer accent-blue-600"
             style={{
-              background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(salaryRange[1] / 50) * 100}%, #374151 ${(salaryRange[1] / 50) * 100}%, #374151 100%)`
+              background: `linear-gradient(to right, #2563eb 0%, #2563eb ${(salaryRange[1] / 50) * 100}%, #e2e8f0 ${(salaryRange[1] / 50) * 100}%, #e2e8f0 100%)`
             }}
           />
-          <div className="flex justify-between text-xs text-gray-500 mt-1.5">
+          <div className="flex justify-between text-xs text-slate-500 mt-1.5">
             <span>0 LPA</span>
             <span>50 LPA</span>
           </div>
@@ -201,30 +201,30 @@ const FilterCard = ({ onFilterChange }) => {
         return (
           <div
             key={section.id}
-            className="mb-3 bg-gray-800/60 border border-gray-700/50 rounded-xl overflow-hidden"
+            className="mb-3 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm"
           >
             <button
               onClick={() => toggleSection(section.id)}
-              className="w-full flex items-center justify-between p-4 hover:bg-gray-700/30 transition-colors"
+              className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors"
             >
-              <div className="flex items-center gap-2 text-sm font-medium text-gray-200">
-                <Icon className="h-4 w-4 text-blue-400" />
+              <div className="flex items-center gap-2 text-sm font-medium text-slate-800">
+                <Icon className="h-4 w-4 text-blue-600" />
                 {section.label}
                 {selectedCount > 0 && (
-                  <span className="text-xs bg-blue-600/30 text-blue-300 border border-blue-600/30 px-1.5 py-0.5 rounded-full">
+                  <span className="text-xs bg-blue-100 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded-full">
                     {selectedCount}
                   </span>
                 )}
               </div>
               {isOpen ? (
-                <ChevronUp className="h-4 w-4 text-gray-500" />
+                <ChevronUp className="h-4 w-4 text-slate-400" />
               ) : (
-                <ChevronDown className="h-4 w-4 text-gray-500" />
+                <ChevronDown className="h-4 w-4 text-slate-400" />
               )}
             </button>
 
             {isOpen && (
-              <div className="px-4 pb-4 space-y-2 border-t border-gray-700/50 pt-3">
+              <div className="px-4 pb-4 space-y-2 border-t border-slate-100 pt-3">
                 {section.options.map((option) => {
                   const isSelected =
                     section.type === "radio"
@@ -235,14 +235,14 @@ const FilterCard = ({ onFilterChange }) => {
                     <label
                       key={option}
                       className={`flex items-center gap-3 cursor-pointer group py-1.5 px-2 rounded-lg transition-all ${
-                        isSelected ? "bg-blue-600/10" : "hover:bg-gray-700/40"
+                        isSelected ? "bg-blue-50" : "hover:bg-slate-50"
                       }`}
                     >
                       <div
                         className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
                           isSelected
-                            ? "border-blue-500 bg-blue-500"
-                            : "border-gray-600 group-hover:border-gray-400"
+                            ? "border-blue-600 bg-blue-600"
+                            : "border-slate-300 group-hover:border-slate-400"
                         }`}
                         onClick={() =>
                           section.type === "radio"
@@ -256,7 +256,7 @@ const FilterCard = ({ onFilterChange }) => {
                       </div>
                       <span
                         className={`text-sm transition-colors ${
-                          isSelected ? "text-blue-300 font-medium" : "text-gray-400 group-hover:text-gray-200"
+                          isSelected ? "text-blue-700 font-medium" : "text-slate-600 group-hover:text-slate-900"
                         }`}
                         onClick={() =>
                           section.type === "radio"
@@ -276,7 +276,7 @@ const FilterCard = ({ onFilterChange }) => {
       })}
 
       {/* Apply Button */}
-      <Button className="w-full mt-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl py-2.5 font-medium flex items-center justify-center gap-2 transition-all">
+      <Button className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2.5 font-medium flex items-center justify-center gap-2 shadow-sm shadow-blue-600/20 transition-all">
         <Zap className="h-4 w-4" />
         Apply Filters
       </Button>

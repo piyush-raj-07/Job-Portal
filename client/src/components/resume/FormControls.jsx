@@ -12,20 +12,20 @@ import { toast } from "sonner"
 import { Plus, Trash2, X } from "lucide-react"
 
 export const fieldCls =
-  "bg-white/5 border-white/10 text-white placeholder:text-slate-600 focus:border-violet-500/50 focus:ring-violet-500/20 rounded-xl h-11"
+  "bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:ring-blue-500/20 focus-visible:ring-offset-0 focus-visible:border-blue-500 rounded-xl h-11"
 export const areaCls =
-  "bg-white/5 border-white/10 text-white placeholder:text-slate-600 focus:border-violet-500/50 focus:ring-violet-500/20 rounded-xl min-h-[96px] py-3"
+  "bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:ring-blue-500/20 focus-visible:ring-offset-0 focus-visible:border-blue-500 rounded-xl min-h-[96px] py-3"
 
 /* Card wrapper with an icon header and an optional "Add" button */
 export const SectionCard = ({ icon: Icon, title, subtitle, children, onAdd, addLabel }) => (
-  <div className="bg-[#0e1529] border border-white/5 rounded-3xl p-6 sm:p-7 shadow-2xl shadow-black/40">
+  <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-sm">
     <div className="flex items-start justify-between gap-4 mb-6">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-2xl gradient-purple flex items-center justify-center shadow-lg shadow-violet-900/40 flex-shrink-0">
-          <Icon className="h-5 w-5 text-white" />
+        <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center flex-shrink-0">
+          <Icon className="h-5 w-5 text-blue-600" />
         </div>
         <div>
-          <h2 className="text-base font-extrabold text-white tracking-tight">{title}</h2>
+          <h2 className="text-base font-bold text-slate-900 tracking-tight">{title}</h2>
           {subtitle && <p className="text-slate-500 text-xs">{subtitle}</p>}
         </div>
       </div>
@@ -33,7 +33,7 @@ export const SectionCard = ({ icon: Icon, title, subtitle, children, onAdd, addL
         <Button
           type="button"
           onClick={onAdd}
-          className="gradient-purple hover:opacity-90 text-white rounded-xl h-9 px-3 text-xs font-semibold flex-shrink-0"
+          className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-9 px-3 text-xs font-semibold flex-shrink-0 shadow-sm shadow-blue-600/20"
         >
           <Plus className="h-3.5 w-3.5 mr-1" /> {addLabel}
         </Button>
@@ -45,7 +45,7 @@ export const SectionCard = ({ icon: Icon, title, subtitle, children, onAdd, addL
 
 export const Field = ({ label, value, onChange, placeholder, type = "text" }) => (
   <div className="space-y-1.5">
-    <Label className="text-slate-300 text-sm font-medium">{label}</Label>
+    <Label className="text-slate-700 text-sm font-medium">{label}</Label>
     <Input
       type={type}
       value={value}
@@ -59,8 +59,8 @@ export const Field = ({ label, value, onChange, placeholder, type = "text" }) =>
 export const AreaField = ({ label, value, onChange, placeholder, hint }) => (
   <div className="space-y-1.5">
     <div className="flex items-center justify-between">
-      <Label className="text-slate-300 text-sm font-medium">{label}</Label>
-      {hint && <span className="text-[11px] text-slate-600">{hint}</span>}
+      <Label className="text-slate-700 text-sm font-medium">{label}</Label>
+      {hint && <span className="text-[11px] text-slate-500">{hint}</span>}
     </div>
     <Textarea
       value={value}
@@ -91,7 +91,7 @@ export const TagInput = ({ label, values, onChange, placeholder }) => {
 
   return (
     <div className="space-y-2">
-      {label && <Label className="text-slate-300 text-sm font-medium">{label}</Label>}
+      {label && <Label className="text-slate-700 text-sm font-medium">{label}</Label>}
       <div className="flex gap-2">
         <Input
           value={draft}
@@ -109,7 +109,7 @@ export const TagInput = ({ label, values, onChange, placeholder }) => {
           type="button"
           onClick={addTag}
           variant="outline"
-          className="border-white/10 bg-transparent hover:bg-white/5 text-slate-300 hover:text-white rounded-xl h-11 px-4 flex-shrink-0"
+          className="border-slate-200 bg-white hover:bg-blue-50 text-slate-600 hover:text-blue-700 hover:border-blue-200 rounded-xl h-11 px-4 flex-shrink-0"
         >
           <Plus className="h-4 w-4" />
         </Button>
@@ -119,13 +119,13 @@ export const TagInput = ({ label, values, onChange, placeholder }) => {
           {values.map((tag, index) => (
             <span
               key={`${tag}-${index}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-600/15 border border-violet-500/25 text-violet-200 text-xs font-medium"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-100 text-blue-700 text-xs font-medium"
             >
               {tag}
               <button
                 type="button"
                 onClick={() => removeTag(index)}
-                className="text-violet-400 hover:text-red-400 transition-colors"
+                className="text-blue-400 hover:text-red-600 transition-colors"
               >
                 <X className="h-3 w-3" />
               </button>
@@ -139,7 +139,7 @@ export const TagInput = ({ label, values, onChange, placeholder }) => {
 
 /* Wrapper around one entry of a repeatable section */
 export const RepeatItem = ({ index, label, onRemove, children }) => (
-  <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5 space-y-4">
+  <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-5 space-y-4">
     <div className="flex items-center justify-between">
       <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
         {label} {index + 1}
@@ -147,7 +147,7 @@ export const RepeatItem = ({ index, label, onRemove, children }) => (
       <button
         type="button"
         onClick={onRemove}
-        className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-red-400 transition-colors"
+        className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-red-600 transition-colors"
       >
         <Trash2 className="h-3.5 w-3.5" /> Remove
       </button>
@@ -157,7 +157,7 @@ export const RepeatItem = ({ index, label, onRemove, children }) => (
 )
 
 export const EmptyState = ({ text }) => (
-  <p className="text-slate-600 text-sm text-center py-6 rounded-2xl border border-dashed border-white/5">
+  <p className="text-slate-500 text-sm text-center py-6 rounded-xl border border-dashed border-slate-300 bg-slate-50/50">
     {text}
   </p>
 )

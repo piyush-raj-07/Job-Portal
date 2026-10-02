@@ -62,7 +62,7 @@ export const Link = ({ url, children, className = "" }) => {
 export const Sheet = ({ children }) => (
   <div
     id="resume-print-area"
-    className="bg-white rounded-2xl shadow-2xl shadow-black/50 px-8 py-9 min-h-[520px] text-slate-800"
+    className="bg-white rounded-xl border border-slate-200 shadow-lg shadow-slate-900/10 px-8 py-9 min-h-[520px] text-slate-800"
   >
     {children}
   </div>

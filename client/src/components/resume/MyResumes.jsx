@@ -43,16 +43,16 @@ const formatUpdated = (value) => {
 
 const ResumeCard = ({ resume, onEdit, onAskDelete, onDuplicate, onSetMaster, busy }) => (
   <div
-    className={`bg-[#0e1529] border rounded-3xl p-6 shadow-2xl shadow-black/40 card-hover flex flex-col ${
-      resume.isMaster ? "border-amber-500/30" : "border-white/5"
+    className={`bg-white border rounded-2xl p-6 shadow-sm card-hover flex flex-col ${
+      resume.isMaster ? "border-amber-300" : "border-slate-200"
     }`}
   >
     <div className="flex items-start gap-3 mb-4">
-      <div className="w-10 h-10 rounded-2xl gradient-purple flex items-center justify-center shadow-lg shadow-violet-900/40 flex-shrink-0">
-        <FileText className="h-5 w-5 text-white" />
+      <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center flex-shrink-0">
+        <FileText className="h-5 w-5 text-blue-600" />
       </div>
       <div className="min-w-0 flex-1">
-        <h2 className="text-base font-extrabold text-white tracking-tight truncate" title={resume.title}>
+        <h2 className="text-base font-bold text-slate-900 tracking-tight truncate" title={resume.title}>
           {resume.title}
         </h2>
         <p className="text-slate-500 text-xs flex items-center gap-1.5 mt-0.5">
@@ -64,29 +64,29 @@ const ResumeCard = ({ resume, onEdit, onAskDelete, onDuplicate, onSetMaster, bus
 
     <div className="flex flex-wrap gap-1.5 mb-5">
       {resume.isMaster && (
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[11px] font-semibold">
-          <Star className="h-3 w-3 fill-amber-300" /> Master
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 text-[11px] font-semibold">
+          <Star className="h-3 w-3 text-amber-500 fill-amber-500" /> Master
         </span>
       )}
       {resume.tailoredForJob?.jobTitle && (
         <span
-          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-500/10 border border-sky-500/25 text-sky-300 text-[11px] font-medium max-w-full"
+          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-50 border border-sky-100 text-sky-700 text-[11px] font-medium max-w-full"
           title={`Tailored for ${resume.tailoredForJob.jobTitle}`}
         >
           <Target className="h-3 w-3 flex-shrink-0" />
           <span className="truncate">Tailored: {resume.tailoredForJob.jobTitle}</span>
         </span>
       )}
-      <span className="inline-block px-2.5 py-1 rounded-lg bg-violet-600/15 border border-violet-500/25 text-violet-200 text-[11px] font-medium capitalize">
+      <span className="inline-block px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-100 text-blue-700 text-[11px] font-medium capitalize">
         {resume.template}
       </span>
     </div>
 
-    <div className="flex gap-2 mt-auto pt-4 border-t border-white/5">
+    <div className="flex gap-2 mt-auto pt-4 border-t border-slate-100">
       <Button
         type="button"
         onClick={() => onEdit(resume._id)}
-        className="flex-1 gradient-purple hover:opacity-90 text-white rounded-xl h-10 text-sm font-semibold"
+        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-10 text-sm font-semibold shadow-sm shadow-blue-600/20"
       >
         <Pencil className="h-3.5 w-3.5 mr-1.5" /> Edit
       </Button>
@@ -96,7 +96,7 @@ const ResumeCard = ({ resume, onEdit, onAskDelete, onDuplicate, onSetMaster, bus
         title="Duplicate"
         disabled={busy}
         onClick={() => onDuplicate(resume)}
-        className="border-white/10 bg-transparent hover:bg-white/5 text-slate-400 hover:text-white rounded-xl h-10 px-3"
+        className="border-slate-200 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-xl h-10 px-3"
       >
         <Copy className="h-3.5 w-3.5" />
       </Button>
@@ -107,7 +107,7 @@ const ResumeCard = ({ resume, onEdit, onAskDelete, onDuplicate, onSetMaster, bus
           title="Set as master resume"
           disabled={busy}
           onClick={() => onSetMaster(resume)}
-          className="border-white/10 bg-transparent hover:bg-amber-500/10 hover:border-amber-500/30 text-slate-400 hover:text-amber-300 rounded-xl h-10 px-3"
+          className="border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-200 text-slate-600 hover:text-amber-700 rounded-xl h-10 px-3"
         >
           <Star className="h-3.5 w-3.5" />
         </Button>
@@ -117,7 +117,7 @@ const ResumeCard = ({ resume, onEdit, onAskDelete, onDuplicate, onSetMaster, bus
         variant="outline"
         title="Delete"
         onClick={() => onAskDelete(resume)}
-        className="border-white/10 bg-transparent hover:bg-red-500/10 hover:border-red-500/30 text-slate-400 hover:text-red-400 rounded-xl h-10 px-3"
+        className="border-slate-200 bg-white hover:bg-red-50 hover:border-red-200 text-slate-600 hover:text-red-600 rounded-xl h-10 px-3"
       >
         <Trash2 className="h-3.5 w-3.5" />
       </Button>
@@ -213,16 +213,16 @@ const MyResumes = () => {
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-[#080d1a]">
+    <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="fixed top-24 right-1/4 w-72 h-72 bg-violet-700/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed top-24 right-1/4 w-72 h-72 bg-blue-200/30 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 relative z-10">
 
         {/* Header */}
         <div className="flex items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-extrabold text-white tracking-tight">My Resumes</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">My Resumes</h1>
             <p className="text-slate-500 text-sm">
               {loading
                 ? "Loading…"
@@ -232,7 +232,7 @@ const MyResumes = () => {
           <Button
             type="button"
             onClick={() => navigate("/resume-builder")}
-            className="gradient-purple hover:opacity-90 text-white rounded-xl h-11 px-5 font-semibold shadow-lg shadow-violet-900/30 flex-shrink-0"
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-11 px-5 font-semibold shadow-sm shadow-blue-600/20 flex-shrink-0"
           >
             <Plus className="h-4 w-4 mr-2" /> New Resume
           </Button>
@@ -241,25 +241,25 @@ const MyResumes = () => {
         {/* Loading */}
         {loading && (
           <div className="flex items-center justify-center gap-3 py-24 text-slate-500">
-            <Loader2 className="h-5 w-5 animate-spin text-violet-400" />
+            <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
             Loading your resumes…
           </div>
         )}
 
         {/* Empty */}
         {!loading && resumes.length === 0 && (
-          <div className="bg-[#0e1529] border border-dashed border-white/10 rounded-3xl py-16 px-6 text-center">
-            <div className="w-14 h-14 rounded-2xl gradient-purple flex items-center justify-center mx-auto mb-5 shadow-lg shadow-violet-900/40">
-              <FileText className="h-7 w-7 text-white" />
+          <div className="bg-white border border-dashed border-slate-300 rounded-2xl py-16 px-6 text-center shadow-sm">
+            <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center mx-auto mb-5">
+              <FileText className="h-7 w-7 text-blue-600" />
             </div>
-            <h2 className="text-lg font-extrabold text-white tracking-tight">No resumes yet</h2>
+            <h2 className="text-lg font-bold text-slate-900 tracking-tight">No resumes yet</h2>
             <p className="text-slate-500 text-sm mt-1 mb-6">
               Build your first resume and it will show up here.
             </p>
             <Button
               type="button"
               onClick={() => navigate("/resume-builder")}
-              className="gradient-purple hover:opacity-90 text-white rounded-xl h-11 px-6 font-semibold shadow-lg shadow-violet-900/30"
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-11 px-6 font-semibold shadow-sm shadow-blue-600/20"
             >
               <Plus className="h-4 w-4 mr-2" /> Create Resume
             </Button>
@@ -286,10 +286,10 @@ const MyResumes = () => {
 
       {/* Delete confirmation — deleting a resume cannot be undone. */}
       <Dialog open={Boolean(pendingDelete)} onOpenChange={(open) => !open && setPendingDelete(null)}>
-        <DialogContent className="bg-[#0e1529] border border-white/10 text-white rounded-3xl sm:max-w-md">
+        <DialogContent className="bg-white border border-slate-200 text-slate-900 rounded-2xl sm:max-w-md shadow-xl shadow-slate-900/10">
           <DialogHeader>
-            <DialogTitle className="text-white">Delete this resume?</DialogTitle>
-            <DialogDescription className="text-slate-400">
+            <DialogTitle className="text-slate-900">Delete this resume?</DialogTitle>
+            <DialogDescription className="text-slate-600">
               &ldquo;{pendingDelete?.title}&rdquo; will be permanently deleted. This cannot be undone.
             </DialogDescription>
           </DialogHeader>
@@ -299,7 +299,7 @@ const MyResumes = () => {
               variant="outline"
               onClick={() => setPendingDelete(null)}
               disabled={deleting}
-              className="border-white/10 bg-transparent hover:bg-white/5 text-slate-300 hover:text-white rounded-xl h-10"
+              className="border-slate-200 bg-white hover:bg-slate-100 text-slate-700 hover:text-slate-900 rounded-xl h-10"
             >
               Cancel
             </Button>

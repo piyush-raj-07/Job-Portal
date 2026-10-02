@@ -28,7 +28,8 @@
         margin: 0;
         padding: 0 4mm;
 
-        /* The on-screen sheet is a floating dark-mode card; on paper it is a page. */
+        /* The on-screen sheet is a floating card; on paper it is a page. */
+        border: none;
         border-radius: 0;
         box-shadow: none;
         min-height: 0;

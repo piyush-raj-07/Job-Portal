@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import cloudinary from "../utils/cloudinary.js";
 import getDataUri from "../utils/datauri.js";
+import { generateEmailVerificationToken, hashToken } from "../utils/emailToken.js";
+import { sendVerificationEmail } from "../utils/sendEmail.js";
 
 // Cookie options for Refresh Token
 // In production the frontend (Vercel) and backend are on different domains,
@@ -44,6 +46,10 @@ export const register = async (req, res) => {
             profilePhotoUrl = cloudResponse.secure_url;
         }
 
+        // Create a verification token. The real token goes in the email,
+        // only its hash is saved in the database.
+        const { token, hashedToken, expiresAt } = generateEmailVerificationToken();
+
         const newUser = await User.create({
             fullname,
             email,
@@ -52,12 +58,28 @@ export const register = async (req, res) => {
             role,
             profile: {
                 profilePhoto: profilePhotoUrl,
-            }
+            },
+            isEmailVerified: false, // can't log in until the email link is clicked
+            emailVerificationToken: hashedToken,
+            emailVerificationExpires: expiresAt,
         });
 
+        // If the email fails, the account still exists and the user can ask
+        // for a new link from the verify-email page, so don't fail signup.
+        let emailSent = true;
+        try {
+            await sendVerificationEmail(newUser, token);
+        } catch (emailError) {
+            console.error("Error sending verification email:", emailError);
+            emailSent = false;
+        }
+
         return res.status(201).json({
-            message: "Account created successfully.",
+            message: emailSent
+                ? "Account created! Please check your email to verify your account."
+                : "Account created, but we couldn't send the verification email. Please use 'Resend verification email'.",
             success: true,
+            emailSent,
             user: {
                 id: newUser._id,
                 fullname: newUser.fullname,
@@ -105,6 +127,16 @@ export const login = async (req, res) => {
             return res.status(400).json({
                 message: "Account doesn't exist with the provided role.",
                 success: false,
+            });
+        }
+
+        // Unverified users get no tokens at all. This check comes after the
+        // password check so strangers can't learn whether an email is verified.
+        if (!user.isEmailVerified) {
+            return res.status(403).json({
+                message: "Please verify your email before logging in. Check your inbox for the verification link.",
+                success: false,
+                emailNotVerified: true, // tells the frontend to open the verify-email page
             });
         }
 
@@ -171,6 +203,19 @@ export const refreshAccessToken = async (req, res) => {
             });
         }
 
+        // Same rule as login: no new tokens for an unverified account.
+        // (Only matters for sessions that started before verification existed.)
+        if (!user.isEmailVerified) {
+            return res
+                .status(403)
+                .clearCookie("refreshToken", cookieOptions)
+                .json({
+                    message: "Please verify your email before logging in.",
+                    success: false,
+                    emailNotVerified: true,
+                });
+        }
+
         // Issue new tokens (Token Rotation)
         const newAccessToken = user.generateAccessToken();
         const newRefreshToken = user.generateRefreshToken();
@@ -231,6 +276,98 @@ export const logoutuser = async (req, res) => {
         console.error("Error during logout:", error);
         return res.status(500).json({
             message: "An internal server error occurred.",
+            success: false,
+        });
+    }
+};
+
+// POST /api/v1/user/verify-email    body: { token }
+export const verifyEmail = async (req, res) => {
+    try {
+        const { token } = req.body;
+
+        // The typeof check stops someone sending an object like {"$ne": null}
+        if (!token || typeof token !== "string") {
+            return res.status(400).json({
+                message: "Verification token is missing.",
+                success: false,
+            });
+        }
+
+        // The database only has the hash, so hash the token from the link
+        // and look for a user with that hash.
+        const user = await User.findOne({ emailVerificationToken: hashToken(token) });
+
+        if (!user) {
+            return res.status(400).json({
+                message: "This verification link is invalid or has already been used.",
+                success: false,
+            });
+        }
+
+        if (!user.emailVerificationExpires || user.emailVerificationExpires < Date.now()) {
+            return res.status(400).json({
+                message: "This verification link has expired. Please request a new one.",
+                success: false,
+            });
+        }
+
+        // Activate the account and delete the token so the link can't be used again
+        user.isEmailVerified = true;
+        user.emailVerificationToken = undefined;
+        user.emailVerificationExpires = undefined;
+        await user.save({ validateBeforeSave: false });
+
+        return res.status(200).json({
+            message: "Email verified successfully! You can now log in.",
+            success: true,
+        });
+    } catch (error) {
+        console.error("Error verifying email:", error);
+        return res.status(500).json({
+            message: "An internal server error occurred.",
+            success: false,
+        });
+    }
+};
+
+// POST /api/v1/user/resend-verification    body: { email }
+export const resendVerificationEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email || typeof email !== "string") {
+            return res.status(400).json({
+                message: "Email is required.",
+                success: false,
+            });
+        }
+
+        // Same answer whether or not the email is registered, so this route
+        // can't be used to find out who has an account.
+        const sameReply = {
+            message: "If an unverified account exists for this email, a new verification link has been sent.",
+            success: true,
+        };
+
+        const user = await User.findOne({ email });
+        if (!user || user.isEmailVerified) {
+            return res.status(200).json(sameReply);
+        }
+
+        // A new token replaces the old one, so older links stop working
+        const { token, hashedToken, expiresAt } = generateEmailVerificationToken();
+        user.emailVerificationToken = hashedToken;
+        user.emailVerificationExpires = expiresAt;
+        await user.save({ validateBeforeSave: false });
+
+        await sendVerificationEmail(user, token);
+
+        return res.status(200).json(sameReply);
+    } catch (error) {
+        console.error("Error resending verification email:", error);
+        return res.status(500).json({
+            message: "Could not send the verification email. Please try again later.",
             success: false,
         });
     }

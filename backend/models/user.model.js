@@ -8,6 +8,12 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     role: { type: String, enum: ["student", "recruiter"], required: true },
     refreshToken: { type: String }, // Store refresh token in DB
+
+    // Email verification
+    isEmailVerified: { type: Boolean, default: false },
+    emailVerificationToken: { type: String },   // Only the HASH of the token is saved, never the real token
+    emailVerificationExpires: { type: Date },   // The link stops working after this time
+
     profile: {
         bio: { type: String },
         skills: [{ type: String }],

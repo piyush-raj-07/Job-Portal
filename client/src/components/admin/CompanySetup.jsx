@@ -65,34 +65,33 @@ const CompanySetup = () => {
     if (singleCompany?.logo) setPreviewUrl(singleCompany.logo)
   }, [singleCompany])
 
-  const fieldCls = "bg-white/5 border-white/10 text-white placeholder:text-slate-600 focus:border-violet-500/50 focus:ring-violet-500/20 rounded-xl h-11"
+  const fieldCls = "bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:ring-blue-500/20 focus-visible:ring-offset-0 focus-visible:border-blue-500 rounded-xl h-11"
 
   return (
-    <div className="min-h-screen bg-[#080d1a]">
+    <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="fixed top-24 left-1/5 w-72 h-72 bg-violet-700/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12 relative z-10">
 
         <button
           onClick={() => navigate("/admin/companies")}
-          className="flex items-center gap-2 text-slate-500 hover:text-white text-sm mb-8 group transition-colors"
+          className="flex items-center gap-2 text-slate-500 hover:text-blue-700 text-sm mb-8 group transition-colors"
         >
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
           Back to Companies
         </button>
 
-        <div className="bg-[#0e1529] border border-white/5 rounded-3xl p-8 shadow-2xl shadow-black/40">
+        <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
           {/* Header */}
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-2xl gradient-purple flex items-center justify-center shadow-lg shadow-violet-900/40 overflow-hidden flex-shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center overflow-hidden flex-shrink-0">
               {previewUrl
                 ? <img src={previewUrl} alt="" className="w-full h-full object-cover" />
-                : <Building2 className="h-6 w-6 text-white" />
+                : <Building2 className="h-6 w-6 text-blue-600" />
               }
             </div>
             <div>
-              <h1 className="text-xl font-extrabold text-white tracking-tight">
+              <h1 className="text-xl font-bold text-slate-900 tracking-tight">
                 {singleCompany?.name || "Company Setup"}
               </h1>
               <p className="text-slate-500 text-sm">Update your company profile</p>
@@ -103,42 +102,42 @@ const CompanySetup = () => {
 
             {/* Logo upload */}
             <div className="space-y-2">
-              <Label className="text-slate-300 text-sm font-medium flex items-center gap-1.5">
-                <Camera className="h-3.5 w-3.5 text-violet-400" /> Company Logo
+              <Label className="text-slate-700 text-sm font-medium flex items-center gap-1.5">
+                <Camera className="h-3.5 w-3.5 text-blue-600" /> Company Logo
               </Label>
               <label
                 htmlFor="company-logo"
                 className={`flex items-center gap-4 p-3.5 rounded-xl border cursor-pointer transition-all
-                  ${input.file ? "border-violet-500/40 bg-violet-600/10" : "border-white/5 bg-white/0 hover:border-white/10 hover:bg-white/5"}`}
+                  ${input.file ? "border-blue-300 bg-blue-50" : "border-slate-200 bg-slate-50 hover:border-slate-300 hover:bg-slate-100"}`}
               >
                 <Input accept="image/*" type="file" onChange={changeFileHandler} className="hidden" id="company-logo" />
                 {previewUrl
-                  ? <img src={previewUrl} alt="Preview" className="w-10 h-10 rounded-xl object-cover border border-violet-500/30" />
-                  : <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0">
+                  ? <img src={previewUrl} alt="Preview" className="w-10 h-10 rounded-xl object-cover border border-blue-200" />
+                  : <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
                     <Camera className="h-5 w-5 text-slate-500" />
                   </div>
                 }
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-300 truncate">
+                  <p className="text-sm font-medium text-slate-700 truncate">
                     {input.file ? input.file.name : "Click to upload logo"}
                   </p>
-                  <p className="text-xs text-slate-600">PNG, JPG up to 2MB</p>
+                  <p className="text-xs text-slate-400">PNG, JPG up to 2MB</p>
                 </div>
-                {input.file && <CheckCircle2 className="h-5 w-5 text-violet-400 flex-shrink-0" />}
+                {input.file && <CheckCircle2 className="h-5 w-5 text-blue-600 flex-shrink-0" />}
               </label>
             </div>
 
             {/* Name + Location */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-slate-300 text-sm font-medium flex items-center gap-1.5">
-                  <Building2 className="h-3.5 w-3.5 text-violet-400" /> Company Name
+                <Label className="text-slate-700 text-sm font-medium flex items-center gap-1.5">
+                  <Building2 className="h-3.5 w-3.5 text-blue-600" /> Company Name
                 </Label>
                 <Input type="text" name="name" value={input.name} onChange={changeEventHandler} className={fieldCls} placeholder="Company name" />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-slate-300 text-sm font-medium flex items-center gap-1.5">
-                  <MapPin className="h-3.5 w-3.5 text-violet-400" /> Location
+                <Label className="text-slate-700 text-sm font-medium flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5 text-blue-600" /> Location
                 </Label>
                 <Input type="text" name="location" value={input.location} onChange={changeEventHandler} className={fieldCls} placeholder="e.g. Bangalore, India" />
               </div>
@@ -146,16 +145,16 @@ const CompanySetup = () => {
 
             {/* Website */}
             <div className="space-y-1.5">
-              <Label className="text-slate-300 text-sm font-medium flex items-center gap-1.5">
-                <Globe className="h-3.5 w-3.5 text-violet-400" /> Website
+              <Label className="text-slate-700 text-sm font-medium flex items-center gap-1.5">
+                <Globe className="h-3.5 w-3.5 text-blue-600" /> Website
               </Label>
               <Input type="text" name="website" value={input.website} onChange={changeEventHandler} className={fieldCls} placeholder="https://yourcompany.com" />
             </div>
 
             {/* Description */}
             <div className="space-y-1.5">
-              <Label className="text-slate-300 text-sm font-medium flex items-center gap-1.5">
-                <FileText className="h-3.5 w-3.5 text-violet-400" /> Description
+              <Label className="text-slate-700 text-sm font-medium flex items-center gap-1.5">
+                <FileText className="h-3.5 w-3.5 text-blue-600" /> Description
               </Label>
               <Input type="text" name="description" value={input.description} onChange={changeEventHandler} className={fieldCls} placeholder="What does your company do?" />
             </div>
@@ -166,14 +165,14 @@ const CompanySetup = () => {
                 type="button"
                 variant="outline"
                 onClick={() => navigate("/admin/companies")}
-                className="flex-1 border-white/10 bg-transparent hover:bg-white/5 text-slate-400 hover:text-white rounded-xl h-11"
+                className="flex-1 border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 rounded-xl h-11"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={loading}
-                className="flex-1 gradient-purple hover:opacity-90 text-white rounded-xl h-11 font-semibold shadow-lg shadow-violet-900/30"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-11 font-semibold shadow-sm shadow-blue-600/20"
               >
                 {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving…</> : "Save Changes"}
               </Button>

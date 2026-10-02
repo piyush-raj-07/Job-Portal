@@ -12,7 +12,7 @@ students write and improve their resumes.
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB
 - **AI:** Python (FastAPI) + Groq
-- **Auth:** JWT stored in an httpOnly cookie
+- **Auth:** JWT access token + rotating refresh token in an httpOnly cookie, email verification with Nodemailer
 - **Uploads:** Multer + Cloudinary
 
 ## ✨ Features
@@ -37,7 +37,7 @@ students write and improve their resumes.
 
 ## 🚀 Setup
 
-You need Node.js 18+, Python 3.10+, MongoDB, and a Groq API key.
+You need Node.js 20+, Python 3.10+, MongoDB, and a Groq API key.
 
 **1. Backend**
 
@@ -47,19 +47,18 @@ npm install
 npm run dev
 ```
 
-Create `backend/.env`:
+Copy `backend/.env.example` to `backend/.env` and fill in your values.
+It lists every variable, including the JWT and SMTP (email) settings.
 
-```env
-MONGO_URL=your_mongodb_url
-PORT=3000
-SECRET_KEY=your_jwt_secret
-CLIENT_URL=http://localhost:5173
+**Email verification:** new accounts must click a link in their email before
+they can log in. While developing you can leave the `SMTP_*` variables empty —
+the verification link is then printed in the backend terminal instead of
+being emailed. If your database already has users from before this feature,
+run this once so they aren't locked out:
 
-CLOUD_NAME=your_cloudinary_name
-API_KEY=your_cloudinary_key
-API_SECRET=your_cloudinary_secret
-
-GROQ_API_KEY=your_groq_key
+```bash
+cd backend
+npm run verify-existing-users
 ```
 
 **2. Frontend**
@@ -81,7 +80,7 @@ VITE_API_BASE_URL=http://localhost:3000
 ```bash
 cd backend/ai-service
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8001 --host 127.0.0.1
+   --host 127.0.0.1
 ```
 
 Now open http://localhost:5173
@@ -109,7 +108,8 @@ All routes start with `/api/v1`.
 
 | Area | Routes |
 |---|---|
-| User | `/user/register`, `/user/login`, `/user/logout`, `/user/profile/update` |
+| User | `/user/register`, `/user/login`, `/user/logout`, `/user/refresh-token`, `/user/profile/update` |
+| Email verification | `/user/verify-email`, `/user/resend-verification` (max 3 per 15 min) |
 | Job | `/job/getAllJobs`, `/job/postJob`, `/job/findJobById/:id`, `/job/deleteJob/:id` |
 | Company | `/company/registercompany`, `/company/getcompany`, `/company/update/:id` |
 | Application | `/application/apply/:id`, `/application/get`, `/application/applicants/:id` |

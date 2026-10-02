@@ -14,6 +14,13 @@ dotenv.config();
 
 const app = express();
 
+// Hosts like Render/Railway put one proxy in front of the app. This tells
+// Express to read the real visitor IP from that proxy, which the rate
+// limiter needs; otherwise every visitor looks like the same IP.
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
+
 // ---------- Middleware ----------
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

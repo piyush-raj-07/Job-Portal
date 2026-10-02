@@ -67,7 +67,7 @@ const ProjectsForm = ({
               type="button"
               onClick={() => onImprove(index)}
               disabled={improving !== null}
-              className="gradient-purple hover:opacity-90 text-white rounded-xl h-9 px-3 text-xs font-semibold shadow-lg shadow-violet-900/30"
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-9 px-3 text-xs font-semibold shadow-sm shadow-blue-600/20"
             >
               {improving === index ? (
                 <><Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />Improving…</>
@@ -81,13 +81,13 @@ const ProjectsForm = ({
                 type="button"
                 variant="outline"
                 onClick={() => onUndo(index)}
-                className="border-white/10 bg-transparent hover:bg-white/5 text-slate-400 hover:text-white rounded-xl h-9 px-3 text-xs"
+                className="border-slate-200 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-xl h-9 px-3 text-xs"
               >
                 <Undo2 className="h-3 w-3 mr-1.5" /> Undo
               </Button>
             )}
 
-            <span className="text-[11px] text-slate-600">
+            <span className="text-[11px] text-slate-500">
               Turns your notes into bullet points — no invented numbers.
             </span>
           </div>
